@@ -1,0 +1,32 @@
+# ── Secrets & credentials (NEVER commit these) ──
+.env
+.env.*
+*.local
+secrets.*
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+credentials*
+*apikey*
+*api-key*
+*secret*
+*.token
+*_token
+
+# ── OS / editor junk ──
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
+*~
+
+# ── Logs & temp ──
+*.log
+npm-debug.log*
+node_modules/
+tmp/
+.cache/
