@@ -15,6 +15,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/jpeg" href="logo.jpeg" />
+  <link rel="apple-touch-icon" href="logo.jpeg" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -40,16 +42,8 @@
   <header class="nav" id="nav">
     <div class="container nav__inner">
       <a href="#home" class="brand" aria-label="MK9 Training home">
-        <span class="brand__mark" aria-hidden="true">
-          <svg viewBox="0 0 48 48" width="40" height="40">
-            <defs>
-              <linearGradient id="paw" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#c8102e"/><stop offset="1" stop-color="#0a3161"/>
-              </linearGradient>
-            </defs>
-            <circle cx="24" cy="24" r="23" fill="none" stroke="url(#paw)" stroke-width="2"/>
-            <path fill="url(#paw)" d="M24 27c-3.2 0-6 2.3-6 5.1 0 2 1.8 3.3 4 3.3 1 0 1.6-.3 2-.3s1 .3 2 .3c2.2 0 4-1.3 4-3.3 0-2.8-2.8-5.1-6-5.1zM16.5 25.5c1.4 0 2.3-1.6 2-3.4-.3-1.8-1.6-3-3-2.8-1.4.2-2.3 1.7-2 3.5.3 1.7 1.6 2.9 3 2.7zm15 0c1.4.2 2.7-1 3-2.7.3-1.8-.6-3.3-2-3.5-1.4-.2-2.7 1-3 2.8-.3 1.8.6 3.4 2 3.4zM20 21.5c1.3 0 2.2-1.6 2-3.5-.2-1.9-1.4-3.2-2.7-3-1.3.2-2.2 1.7-2 3.6.2 1.7 1.4 2.9 2.7 2.9zm8 0c1.3 0 2.5-1.2 2.7-3 .2-1.9-.7-3.4-2-3.6-1.3-.2-2.5 1.1-2.7 3-.2 1.9.7 3.6 2 3.6z"/>
-          </svg>
+        <span class="brand__mark">
+          <img src="logo.jpeg" alt="MK9 Training logo" class="brand__logo" />
         </span>
         <span class="brand__text">MK<span class="brand__nine">9</span> <em>Training</em></span>
       </a>
@@ -104,10 +98,9 @@
         </ul>
       </div>
 
-      <!-- PHOTO SLOT: replace the .hero__media background-image in styles.css with a real photo of you + a dog -->
-      <div class="hero__media reveal" aria-hidden="true">
+      <div class="hero__media reveal">
         <div class="hero__photo">
-          <span class="hero__photo-label">Your photo here</span>
+          <img src="logo.jpeg" alt="MK9 Training — USMC Veteran Owned" class="hero__logo" />
         </div>
         <div class="hero__card">
           <span class="usflag usflag--card" aria-hidden="true"></span>
@@ -479,6 +472,7 @@
     <div class="container footer__grid">
       <div class="footer__brand">
         <span class="brand brand--footer">
+          <img src="logo.jpeg" alt="MK9 Training logo" class="brand__logo brand__logo--footer" />
           <span class="brand__text">MK<span class="brand__nine">9</span> <em>Training</em></span>
         </span>
         <p>Veteran owned &amp; operated. Building bonds between great owners and great dogs — one honest program at a time.</p>
