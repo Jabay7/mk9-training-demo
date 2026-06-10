@@ -160,6 +160,11 @@ ul { list-style: none; }
   width: 44px; height: 44px; border-radius: 50%; object-fit: cover; transform: scale(1.12);
   box-shadow: 0 0 0 2px rgba(255, 255, 255, .14);
 }
+/* Smaller nav logo on desktop (mobile keeps the larger 46px) */
+@media (min-width: 981px) {
+  .brand__mark { width: 36px; height: 36px; }
+  .brand__text { font-size: 1.35rem; }
+}
 
 .nav__links { display: flex; gap: 1.9rem; }
 .nav__links a {
