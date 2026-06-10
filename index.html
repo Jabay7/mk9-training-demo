@@ -59,7 +59,6 @@
         <a href="#bond">The Bond</a>
         <a href="#honor">Who We Serve</a>
         <a href="#process">How It Works</a>
-        <a href="#results">Results</a>
         <a href="#faq">FAQ</a>
       </nav>
 
@@ -76,6 +75,7 @@
     <div class="hero__stars" aria-hidden="true"></div>
     <div class="hero__stripes" aria-hidden="true"></div>
     <div class="hero__glow" aria-hidden="true"></div>
+    <div class="hero__flag usflag" aria-hidden="true"></div>
 
     <div class="container hero__inner">
       <div class="hero__content reveal">
@@ -110,7 +110,7 @@
           <span class="hero__photo-label">Your photo here</span>
         </div>
         <div class="hero__card">
-          <div class="hero__card-flag"></div>
+          <span class="usflag usflag--card" aria-hidden="true"></span>
           <div>
             <strong>Veteran Owned &amp; Operated</strong>
             <span>Discipline you can feel in every command.</span>
@@ -323,7 +323,7 @@
       </div>
 
       <div class="honor__banner reveal">
-        <div class="honor__banner-flag"></div>
+        <span class="usflag usflag--banner" aria-hidden="true"></span>
         <div class="honor__banner-text">
           <strong>Service Member &amp; First Responder Priority</strong>
           <span>Front-of-line scheduling and dedicated pricing. Just mention it when you apply — proof appreciated, never interrogated.</span>
@@ -366,35 +366,6 @@
     </div>
   </section>
 
-  <!-- ============ RESULTS / TESTIMONIALS ============ -->
-  <section class="results" id="results">
-    <div class="container">
-      <div class="section-head reveal">
-        <span class="eyebrow">Results &amp; Reviews</span>
-        <h2 class="section-title">Owners who got their dog — and their peace — back</h2>
-        <p class="section-lead">Real words go here as your reviews come in. Swap in genuine testimonials and Google ratings to build trust fast.</p>
-      </div>
-
-      <div class="results__grid">
-        <figure class="review reveal">
-          <div class="review__stars">★★★★★</div>
-          <blockquote>"I came in wanting an obedient dog. I left with a partner. MK9 didn't just train my dog — they taught me how to lead him."</blockquote>
-          <figcaption><span class="review__avatar">J</span><div><strong>Future Client</strong><span>Day Program</span></div></figcaption>
-        </figure>
-        <figure class="review reveal">
-          <div class="review__stars">★★★★★</div>
-          <blockquote>"As a first responder, my schedule is brutal. They worked with me on everything and treated my dog like their own. Worth every dollar."</blockquote>
-          <figcaption><span class="review__avatar">M</span><div><strong>Future Client</strong><span>Board &amp; Train</span></div></figcaption>
-        </figure>
-        <figure class="review reveal">
-          <div class="review__stars">★★★★★</div>
-          <blockquote>"Honest from day one. They told me my dog only needed the Day Program and didn't upsell me. That earned my trust instantly."</blockquote>
-          <figcaption><span class="review__avatar">S</span><div><strong>Future Client</strong><span>Day Program</span></div></figcaption>
-        </figure>
-      </div>
-    </div>
-  </section>
-
   <!-- ============ CONTACT / CTA ============ -->
   <section class="contact" id="contact">
     <div class="contact__stars" aria-hidden="true"></div>
@@ -409,7 +380,7 @@
         <ul class="contact__list">
           <li><svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M6.62 10.79a15.53 15.53 0 006.59 6.59l2.2-2.2a1 1 0 011.05-.24 11.36 11.36 0 003.55.57 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11.36 11.36 0 00.57 3.55 1 1 0 01-.25 1.05z"/></svg> (760) 271-5998</li>
           <li><svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg> hello@mk9training.com</li>
-          <li><svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M12 2a7 7 0 00-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 00-7-7zm0 9.5A2.5 2.5 0 1112 6.5a2.5 2.5 0 010 5z"/></svg> Your Town, USA</li>
+          <li><svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M12 2a7 7 0 00-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 00-7-7zm0 9.5A2.5 2.5 0 1112 6.5a2.5 2.5 0 010 5z"/></svg> Oceanside, CA</li>
         </ul>
       </div>
 
@@ -511,6 +482,7 @@
           <span class="brand__text">MK<span class="brand__nine">9</span> <em>Training</em></span>
         </span>
         <p>Veteran owned &amp; operated. Building bonds between great owners and great dogs — one honest program at a time.</p>
+        <span class="usflag usflag--footer" aria-hidden="true"></span>
         <span class="footer__flag-badge">
           <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M12 2l2.39 4.84 5.34.78-3.86 3.77.91 5.32L12 14.98l-4.78 2.51.91-5.32L4.27 8.4l5.34-.78L12 2z"/></svg>
           Proudly serving those who serve
@@ -549,7 +521,6 @@
     <a href="#bond">The Bond</a>
     <a href="#honor">Who We Serve</a>
     <a href="#process">How It Works</a>
-    <a href="#results">Results</a>
     <a href="#faq">FAQ</a>
     <a href="#contact" class="btn btn--primary btn--lg">Apply Now</a>
   </div>
