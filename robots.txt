@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://trainwithmk9.com/sitemap.xml

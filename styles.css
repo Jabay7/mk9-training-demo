@@ -132,6 +132,16 @@ ul { list-style: none; }
   font-size: .76rem; color: var(--gold); font-weight: 600;
 }
 .topbar__cta:hover { color: #fff; }
+.topbar__ig {
+  display: inline-flex; align-items: center; gap: .45rem;
+  font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: .08em;
+  font-size: .74rem; font-weight: 600; color: #fff;
+  padding: .32rem .8rem; border-radius: 999px;
+  background: linear-gradient(45deg, #f9ce34, #ee2a7b 45%, #6228d7);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.topbar__ig:hover { color: #fff; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(238,42,123,.45); }
+.topbar__ig svg { flex: none; }
 
 /* ---------- Nav ---------- */
 .nav {
@@ -315,13 +325,14 @@ ul { list-style: none; }
 .about__grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 3.5rem; align-items: center; }
 .about__media { position: relative; }
 .about__photo {
-  aspect-ratio: 1/1; border-radius: var(--radius); overflow: hidden;
+  aspect-ratio: 3/4; border-radius: var(--radius); overflow: hidden;
   background:
     repeating-linear-gradient(135deg, rgba(255,255,255,.04) 0 22px, transparent 22px 44px),
     linear-gradient(160deg, var(--navy-700), var(--blue));
   box-shadow: var(--shadow); display: grid; place-items: center;
   border: 1px solid var(--line);
 }
+.about__photo img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
 .about__photo-label { font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: .15em; font-size: .8rem; color: rgba(255,255,255,.45); }
 .about__stamp {
   position: absolute; right: -14px; top: -14px;
@@ -503,6 +514,8 @@ ul { list-style: none; }
 .contact__list { display: grid; gap: .9rem; }
 .contact__list li { display: flex; align-items: center; gap: .7rem; color: #e3ebf6; }
 .contact__list svg { color: var(--gold); flex: none; }
+.contact__list a { color: inherit; text-decoration: none; transition: color .2s; }
+.contact__list a:hover { color: var(--gold); }
 
 .contact__form { background: #fff; border-radius: var(--radius); padding: 2.4rem; box-shadow: var(--shadow); color: var(--ink); }
 .field { display: flex; flex-direction: column; gap: .4rem; margin-bottom: 1.1rem; }
@@ -627,6 +640,8 @@ ul { list-style: none; }
 @media (max-width: 620px) {
   .topbar__badge span:not(svg) { font-size: .68rem; }
   .topbar__link { display: none; }
+  .topbar__ig span { display: none; }
+  .topbar__ig { padding: .35rem .5rem; }
   .stats__grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem 1rem; }
   .stat:nth-child(2) { border-right: 0; }
   .process__track { grid-template-columns: 1fr; }

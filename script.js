@@ -8,6 +8,24 @@
   var yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
+  /* ---- Analytics helper (safe no-op until GA4 / Meta Pixel is configured) ---- */
+  function track(name, params) {
+    try { if (typeof window.gtag === "function") window.gtag("event", name, params || {}); } catch (e) {}
+    try { if (typeof window.fbq === "function") window.fbq("trackCustom", name, params || {}); } catch (e) {}
+  }
+
+  /* ---- Track CTA + phone clicks (conversion signals) ---- */
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest ? e.target.closest("a") : null;
+    if (!a) return;
+    var href = a.getAttribute("href") || "";
+    if (href.indexOf("tel:") === 0) { track("phone_click", { phone: href.replace("tel:", "") }); return; }
+    if (a.classList.contains("btn--primary") || a.classList.contains("topbar__cta") ||
+        a.classList.contains("sticky-cta") || a.classList.contains("nav__cta") || href === "#contact") {
+      track("cta_click", { label: (a.textContent || "").trim().slice(0, 60) });
+    }
+  }, { passive: true });
+
   /* ---- Nav background on scroll ---- */
   var nav = document.getElementById("nav");
   var stickyCta = document.getElementById("stickyCta");
@@ -91,7 +109,13 @@
     });
   });
 
-  /* ---- Lead form (front-end validation + friendly confirmation) ---- */
+  /* ---- Lead form (validation + delivery) ----
+     To deliver leads for real: create a free form at https://formspree.io, then paste its
+     endpoint below, e.g. "https://formspree.io/f/abcdwxyz". Leave it "" to keep demo mode
+     (validates + confirms on screen but does NOT send). Netlify Forms users: add the
+     `netlify` attribute to the <form> tag in index.html instead and leave this as "". */
+  var FORM_ENDPOINT = "";
+
   var form = document.getElementById("leadForm");
   var note = document.getElementById("formNote");
   if (form) {
@@ -113,10 +137,37 @@
         return;
       }
 
-      // NOTE: wire this up to a real handler (Formspree, Netlify Forms, your CRM, etc.)
-      note.textContent = "Thank you! Your assessment request is in. We'll reach out within 1 business day. 🇺🇸";
-      note.className = "contact__form-note success";
-      form.reset();
+      function onSuccess() {
+        note.textContent = "Thank you! Your request is in. We'll reach out within 1 business day. 🇺🇸";
+        note.className = "contact__form-note success";
+        track("generate_lead", {
+          program: (form.querySelector("#program") || {}).value || "",
+          first_responder: (form.querySelector("#service") || {}).value || ""
+        });
+        form.reset();
+      }
+
+      // Demo mode (no endpoint configured): confirm on screen, fire tracking, but don't send.
+      if (!FORM_ENDPOINT) { onSuccess(); return; }
+
+      var submitBtn = form.querySelector('button[type="submit"]');
+      if (submitBtn) submitBtn.disabled = true;
+      note.textContent = "Sending…";
+      note.className = "contact__form-note";
+
+      fetch(FORM_ENDPOINT, {
+        method: "POST",
+        headers: { "Accept": "application/json" },
+        body: new FormData(form)
+      }).then(function (res) {
+        if (res.ok) onSuccess();
+        else throw new Error("Bad response");
+      }).catch(function () {
+        note.textContent = "Something went wrong. Please call (760) 271-5998 or email us directly.";
+        note.className = "contact__form-note error";
+      }).finally(function () {
+        if (submitBtn) submitBtn.disabled = false;
+      });
     });
   }
 })();
