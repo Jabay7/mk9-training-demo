@@ -511,7 +511,21 @@ ul { list-style: none; }
 }
 .ig-handle svg { color: #fff; flex: none; }
 .ig-handle:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(238,42,123,.4); }
-.ig-handle--footer { margin: .2rem 0; padding: .38rem .8rem; font-size: .92rem; }
+/* Scoped to .footer__col deliberately: that rule sets display:block and
+   padding:.35rem 0 on every footer link, and being a class plus an element it
+   outranks a lone .ig-handle--footer. Without matching its specificity the
+   gradient stretches the full column width and loses its side padding, so it no
+   longer hugs the text. */
+.footer__col a.ig-handle--footer {
+  display: inline-flex;
+  width: max-content;
+  max-width: 100%;
+  margin: .2rem 0;
+  padding: .38rem .8rem;
+  font-size: .92rem;
+}
+/* Footer links nudge right on hover; the pill should not shift with them. */
+.footer__col a.ig-handle--footer:hover { padding-left: .8rem; }
 
 .contact__form { background: #fff; border-radius: var(--radius); padding: 2.4rem; box-shadow: var(--shadow); color: var(--ink); }
 .field { display: flex; flex-direction: column; gap: .4rem; margin-bottom: 1.1rem; }
