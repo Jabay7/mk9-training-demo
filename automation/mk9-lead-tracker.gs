@@ -104,6 +104,7 @@ function setup() {
   props.setProperty('SPREADSHEET_ID', ss.getId());
   props.setProperty('CALENDAR_ID', calendar.getId());
 
+  shareWith_(ss, calendar);
   installWeeklyTrigger_();
 
   var msg =
@@ -113,8 +114,13 @@ function setup() {
     '<p>Next: deploy this script as a web app and give the URL to your website, ' +
     'so submissions start flowing in. Steps are in automation/README.md.</p>';
 
+  // Whoever ran setup() needs the links too, not just the alert recipient.
+  var to = [recipient_()];
+  var owner = Session.getEffectiveUser().getEmail();
+  if (owner && to.indexOf(owner) === -1) to.push(owner);
+
   MailApp.sendEmail({
-    to: recipient_(),
+    to: to.join(','),
     subject: 'MK9 lead tracker is set up',
     htmlBody: msg
   });
@@ -122,6 +128,23 @@ function setup() {
   Logger.log('Spreadsheet: ' + ss.getUrl());
   Logger.log('Calendar ID: ' + calendar.getId());
   return ss.getUrl();
+}
+
+/**
+ * Grants the alert recipient edit access when the script runs in someone else's
+ * account — the tracker is built by whoever deploys it, but the person working
+ * the leads has to be able to open and tick things off.
+ */
+function shareWith_(ss, calendar) {
+  var share = PropertiesService.getScriptProperties().getProperty('NOTIFY_EMAIL');
+  var owner = Session.getEffectiveUser().getEmail();
+  if (!share || share === owner) return;
+
+  try { DriveApp.getFileById(ss.getId()).addEditor(share); }
+  catch (err) { Logger.log('sheet share failed: ' + err); }
+
+  try { calendar.addEditor(share); }
+  catch (err) { Logger.log('calendar share failed: ' + err); }
 }
 
 function applyConditionalFormatting_(sheet, lastRow) {

@@ -43,12 +43,20 @@ Do this in the Google account that should own the tracker and receive alerts.
 7. Send that URL to whoever maintains the website. It goes into
    `script.js` as `TRACKER_ENDPOINT`, and submissions start flowing.
 
-### Sending alerts to a different address
+### Running it from one account for someone else
 
-By default alerts go to the account that authorized the script. To send them
-elsewhere, open **Project Settings → Script Properties**, add a property named
-`NOTIFY_EMAIL`, and set the address. The address is deliberately not stored in
-the code, because the website repository is public.
+The tracker is created inside whichever account runs `setup()`. To build it in
+your own Drive while someone else works the leads, set `NOTIFY_EMAIL` **before**
+running `setup()`: open **Project Settings → Script Properties**, add a property
+named `NOTIFY_EMAIL`, and set it to their address.
+
+`setup()` then grants that address edit access to both the spreadsheet and the
+calendar, and every alert and digest goes to them. The setup confirmation is sent
+to both of you. Set the property first — sharing happens during setup, so adding
+it afterwards means sharing the sheet by hand.
+
+The address is deliberately never written into the code, because the website
+repository is public.
 
 ## What the sheet tracks
 
