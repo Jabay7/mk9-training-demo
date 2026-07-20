@@ -110,11 +110,16 @@
   });
 
   /* ---- Lead form (validation + delivery) ----
-     To deliver leads for real: create a free form at https://formspree.io, then paste its
-     endpoint below, e.g. "https://formspree.io/f/abcdwxyz". Leave it "" to keep demo mode
-     (validates + confirms on screen but does NOT send). Netlify Forms users: add the
-     `netlify` attribute to the <form> tag in index.html instead and leave this as "". */
-  var FORM_ENDPOINT = "";
+     Delivery runs through FormSubmit, which needs no account. Submissions are emailed
+     to the address in the endpoint below.
+
+     NOTE: the very first submission triggers a one-time activation email to that address.
+     Until someone clicks the link in it, submissions are accepted but NOT forwarded.
+
+     Optional hardening: once activated, FormSubmit issues a random alias. Swapping the
+     address here for "https://formsubmit.co/ajax/<alias>" keeps the inbox out of the
+     page source. Setting this back to "" restores demo mode (confirms but never sends). */
+  var FORM_ENDPOINT = "https://formsubmit.co/ajax/cali@trainwithmk9.com";
 
   var form = document.getElementById("leadForm");
   var note = document.getElementById("formNote");
@@ -155,15 +160,23 @@
       note.textContent = "Sending…";
       note.className = "contact__form-note";
 
+      var payload = new FormData(form);
+      payload.append("_subject", "New lead from trainwithmk9.com");
+      payload.append("_template", "table");
+      payload.append("_captcha", "false");
+
       fetch(FORM_ENDPOINT, {
         method: "POST",
         headers: { "Accept": "application/json" },
-        body: new FormData(form)
+        body: payload
       }).then(function (res) {
-        if (res.ok) onSuccess();
-        else throw new Error("Bad response");
+        return res.json().catch(function () { return {}; }).then(function (data) {
+          // FormSubmit reports success as the string "true", not a boolean.
+          if (res.ok && String(data.success) === "true") onSuccess();
+          else throw new Error(data.message || "Bad response");
+        });
       }).catch(function () {
-        note.textContent = "Something went wrong. Please call (760) 271-5998 or email us directly.";
+        note.textContent = "Something went wrong. Please call (760) 271-5998 or email cali@trainwithmk9.com.";
         note.className = "contact__form-note error";
       }).finally(function () {
         if (submitBtn) submitBtn.disabled = false;
