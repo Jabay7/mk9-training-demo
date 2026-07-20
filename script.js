@@ -127,7 +127,7 @@
      While this is "", submissions go straight to FORM_ENDPOINT above, which only
      emails. FORM_ENDPOINT stays wired up either way as the fallback, so a tracker
      outage costs a duplicate email at worst rather than a lost enquiry. */
-  var TRACKER_ENDPOINT = "https://script.google.com/macros/s/AKfycbxhonLPzJdmu2_cc6GH2-b8VcvglTExu_nUUKXrnhOPIatEefqbj-gb1TUlGexf0Zg5/exec";
+  var TRACKER_ENDPOINT = "https://script.google.com/macros/s/AKfycby7DvKedtDkCiv99QkjczzA3_TY5tBeDRsSVQXOuEA3wjZphhvMvyEM-JVrm_w4JYYQ/exec";
 
   /* Shown both on a real success and on a honeypot hit, so the two must stay
      identical — any difference between them tells a bot which field is the trap. */
