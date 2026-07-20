@@ -27,7 +27,7 @@ npx serve .
 Search `index.html` / `styles.css` for these and replace:
 
 1. **Phone number** — `(000) 000-0000` and the `tel:+10000000000` links.
-2. **Email** — `hello@mk9training.com`.
+2. **Email** — `cali@trainwithmk9.com`.
 3. **Location** — `Your Town, USA`.
 4. **Photos** — there are two image slots:
    - **Hero photo** (`.hero__photo`) — a strong shot of you + a dog.
@@ -41,9 +41,7 @@ Search `index.html` / `styles.css` for these and replace:
      }
      ```
      (then remove the `.hero__photo-label` text in the HTML)
-5. **Testimonials** — the three `.review` blocks are placeholders. Swap in real client
-   quotes and Google ratings as they come in (social proof drives bookings).
-6. **Pricing** — currently "priced by assessment" / "case by case" on purpose. Add real
+5. **Pricing** — currently "priced by assessment" / "case by case" on purpose. Add real
    numbers if/when you want them public.
 
 ## The contact form
@@ -66,4 +64,4 @@ yet. To make it actually deliver leads, pick one (all free to start):
 ## Going live
 
 Drag-and-drop the folder onto **Netlify Drop** (netlify.com/drop) or **Vercel**, or use
-**GitHub Pages**. All free, all support a custom domain like `mk9training.com`.
+**GitHub Pages**. All free, all support a custom domain like `trainwithmk9.com`.
