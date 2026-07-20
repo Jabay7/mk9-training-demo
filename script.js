@@ -142,6 +142,19 @@
         return;
       }
 
+      /* Spam trap. FormSubmit does not enforce _honey on its /ajax/ endpoint (confirmed by
+         testing: submissions with the field filled were still delivered), so the honeypot
+         is enforced here instead. A bot that fills every field sees the normal confirmation
+         and nothing is sent. Deliberately does not call onSuccess, so fake submissions stay
+         out of the conversion tracking. */
+      var honey = form.querySelector('[name="_honey"]');
+      if (honey && honey.value) {
+        note.textContent = "Thank you! Your request is in. We'll reach out within 1 business day. 🇺🇸";
+        note.className = "contact__form-note success";
+        form.reset();
+        return;
+      }
+
       function onSuccess() {
         note.textContent = "Thank you! Your request is in. We'll reach out within 1 business day. 🇺🇸";
         note.className = "contact__form-note success";
