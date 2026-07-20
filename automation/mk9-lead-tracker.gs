@@ -351,6 +351,71 @@ function repairRows() {
   return leads.length;
 }
 
+/**
+ * Pulls leads out of the other tracker copies into the live sheet.
+ *
+ * Each setup() run created a fresh spreadsheet, so leads landed in whichever
+ * copy was current at the time. This appends anything the live sheet does not
+ * already hold, keyed on time, name and email so running it twice is harmless.
+ * Once it reports what it moved, the other copies are safe to delete.
+ */
+function importStrandedLeads() {
+  var liveId = PropertiesService.getScriptProperties().getProperty('SPREADSHEET_ID');
+  if (!liveId) throw new Error('Run setup() first.');
+
+  var live = SpreadsheetApp.openById(liveId).getSheetByName(CONFIG.sheetName);
+  var seen = {}, held = 0;
+
+  var existing = live.getRange(2, 1, Math.max(live.getMaxRows() - 1, 1), COLUMNS.length).getValues();
+  for (var i = 0; i < existing.length; i++) {
+    if (existing[i][COL.date - 1]) { seen[leadKey_(existing[i])] = true; held++; }
+  }
+
+  var incoming = [], scanned = 0;
+  var files = DriveApp.getFilesByName(CONFIG.spreadsheetTitle);
+
+  while (files.hasNext()) {
+    var f = files.next();
+    if (f.getId() === liveId || f.isTrashed()) continue;
+
+    var sh = SpreadsheetApp.openById(f.getId()).getSheetByName(CONFIG.sheetName);
+    if (!sh) continue;
+    scanned++;
+
+    var rows = sh.getRange(2, 1, Math.max(sh.getMaxRows() - 1, 1), COLUMNS.length).getValues();
+    for (var j = 0; j < rows.length; j++) {
+      if (!rows[j][COL.date - 1]) continue;
+      var k = leadKey_(rows[j]);
+      if (seen[k]) continue;
+      seen[k] = true;
+      incoming.push(rows[j]);
+    }
+  }
+
+  if (incoming.length) {
+    incoming.sort(function (a, b) { return a[COL.date - 1] - b[COL.date - 1]; });
+
+    var start = nextRow_(live);
+    live.getRange(start, 1, incoming.length, COLUMNS.length).setValues(incoming);
+    live.getRange(start, COL.contacted, incoming.length, 1).insertCheckboxes();
+    live.getRange(start, COL.daysOpen, incoming.length, 1)
+      .setFormula('=IF($A' + start + '="","",INT(NOW()-$A' + start + '))');
+    live.getRange(start, COL.date, incoming.length, 1).setNumberFormat('yyyy-mm-dd hh:mm');
+    live.getRange(start, COL.followUp, incoming.length, 1).setNumberFormat('yyyy-mm-dd');
+  }
+
+  Logger.log('Scanned ' + scanned + ' other copies. Imported ' + incoming.length +
+             ' lead(s). Live sheet now holds ' + (held + incoming.length) + '.');
+  return incoming.length;
+}
+
+/** Identity of a lead, so the same one is never imported twice. */
+function leadKey_(row) {
+  var d = row[COL.date - 1];
+  return (d instanceof Date ? d.getTime() : String(d)) + '|' +
+         String(row[COL.name - 1]).trim() + '|' + String(row[COL.email - 1]).trim();
+}
+
 function createFollowUp_(lead) {
   var id = PropertiesService.getScriptProperties().getProperty('CALENDAR_ID');
   if (!id) return;
