@@ -127,7 +127,7 @@
      While this is "", submissions go straight to FORM_ENDPOINT above, which only
      emails. FORM_ENDPOINT stays wired up either way as the fallback, so a tracker
      outage costs a duplicate email at worst rather than a lost enquiry. */
-  var TRACKER_ENDPOINT = "";
+  var TRACKER_ENDPOINT = "https://script.google.com/macros/s/AKfycbw3G4OoU1faBu57LJzm_Zkjy6ZtNmb-zYZEQzxjE-SbwfuyDkRBhtSYREkO5gg123pZ/exec";
 
   var form = document.getElementById("leadForm");
   var note = document.getElementById("formNote");
