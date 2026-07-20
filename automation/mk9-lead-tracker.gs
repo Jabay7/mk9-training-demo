@@ -409,6 +409,31 @@ function importStrandedLeads() {
   return incoming.length;
 }
 
+/**
+ * Removes every lead row, leaving the headers, tick boxes and formulas in place.
+ * For wiping test submissions before the tracker goes into real use.
+ */
+function clearLeads() {
+  var id = PropertiesService.getScriptProperties().getProperty('SPREADSHEET_ID');
+  if (!id) throw new Error('Run setup() first.');
+
+  var sheet = SpreadsheetApp.openById(id).getSheetByName(CONFIG.sheetName);
+  var span = Math.max(sheet.getMaxRows() - 1, 1);
+
+  var rows = sheet.getRange(2, 1, span, COLUMNS.length).getValues();
+  var removed = 0;
+  for (var i = 0; i < rows.length; i++) if (rows[i][COL.date - 1]) removed++;
+
+  sheet.getRange(2, 1, span, COLUMNS.length).clearContent();
+  sheet.getRange(2, COL.contacted, span, 1).insertCheckboxes();
+  sheet.getRange(2, COL.daysOpen, span, 1).setFormula('=IF($A2="","",INT(NOW()-$A2))');
+  sheet.getRange(2, COL.date, span, 1).setNumberFormat('yyyy-mm-dd hh:mm');
+  sheet.getRange(2, COL.followUp, span, 1).setNumberFormat('yyyy-mm-dd');
+
+  Logger.log('Cleared ' + removed + ' lead row(s).');
+  return removed;
+}
+
 /** Identity of a lead, so the same one is never imported twice. */
 function leadKey_(row) {
   var d = row[COL.date - 1];
