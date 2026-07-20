@@ -121,6 +121,14 @@
      page source. Setting this back to "" restores demo mode (confirms but never sends). */
   var FORM_ENDPOINT = "https://formsubmit.co/ajax/cali@trainwithmk9.com";
 
+  /* Primary destination: the Apps Script lead tracker, which logs the submission to
+     the spreadsheet, books a follow-up on the calendar, and emails an alert. Paste
+     its web app URL here once deployed (it ends in /exec) — see automation/README.md.
+     While this is "", submissions go straight to FORM_ENDPOINT above, which only
+     emails. FORM_ENDPOINT stays wired up either way as the fallback, so a tracker
+     outage costs a duplicate email at worst rather than a lost enquiry. */
+  var TRACKER_ENDPOINT = "";
+
   var form = document.getElementById("leadForm");
   var note = document.getElementById("formNote");
   if (form) {
@@ -178,22 +186,33 @@
       payload.append("_template", "table");
       payload.append("_captcha", "false");
 
-      fetch(FORM_ENDPOINT, {
-        method: "POST",
-        headers: { "Accept": "application/json" },
-        body: payload
-      }).then(function (res) {
-        return res.json().catch(function () { return {}; }).then(function (data) {
-          // FormSubmit reports success as the string "true", not a boolean.
-          if (res.ok && String(data.success) === "true") onSuccess();
-          else throw new Error(data.message || "Bad response");
+      /* Both endpoints answer HTTP 200 even when they have not accepted the
+         submission, so the response body decides. Trusting res.ok alone is what
+         used to report a cheerful success while the lead went nowhere. */
+      function post(url) {
+        if (!url) return Promise.reject(new Error("no endpoint configured"));
+        return fetch(url, {
+          method: "POST",
+          headers: { "Accept": "application/json" },
+          body: payload
+        }).then(function (res) {
+          return res.json().catch(function () { return {}; }).then(function (data) {
+            if (res.ok && String(data.success) === "true") return data;
+            throw new Error(data.message || "Bad response");
+          });
         });
-      }).catch(function () {
-        note.textContent = "Something went wrong. Please call (760) 271-5998 or email cali@trainwithmk9.com.";
-        note.className = "contact__form-note error";
-      }).finally(function () {
-        if (submitBtn) submitBtn.disabled = false;
-      });
+      }
+
+      post(TRACKER_ENDPOINT)
+        .catch(function () { return post(FORM_ENDPOINT); })
+        .then(onSuccess)
+        .catch(function () {
+          note.textContent = "Something went wrong. Please call (760) 271-5998 or email cali@trainwithmk9.com.";
+          note.className = "contact__form-note error";
+        })
+        .finally(function () {
+          if (submitBtn) submitBtn.disabled = false;
+        });
     });
   }
 })();
