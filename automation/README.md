@@ -81,9 +81,14 @@ The address is never written into this repository, which is public.
 | Days Open | Counts itself |
 | Notes | Yours |
 
-Rows colour themselves: amber once a lead has gone a day without contact, red
-after two, green once ticked off. The point is that a neglected lead becomes
-visually obvious rather than scrolling out of sight.
+Rows colour themselves from the tick box: **red** while a lead is outstanding,
+**green** once it is ticked. An untouched box counts as outstanding, so a new
+lead is red the moment it lands. The point is that anything still needing a call
+is visible at a glance instead of scrolling out of sight.
+
+To change the colours, edit `applyConditionalFormatting_` and then run
+**`refreshFormatting`** — not `setup`, which would build a second spreadsheet and
+calendar and start writing to the empty ones.
 
 ### Beyond what was asked for
 

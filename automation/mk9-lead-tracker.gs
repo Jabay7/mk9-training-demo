@@ -29,8 +29,6 @@ var CONFIG = {
   sheetName: 'Leads',
   calendarName: 'MK9 Training',
   followUpHours: 24,   // how long after a lead arrives to schedule the nudge
-  warnDays: 1,         // uncontacted this long turns amber
-  staleDays: 2,        // uncontacted this long turns red
   digestHour: 8        // Monday digest send hour, 24h clock
 };
 
@@ -162,22 +160,42 @@ function shareWith_(ss, calendar) {
   catch (err) { Logger.log('calendar share failed: ' + err); }
 }
 
+/**
+ * Green once the Contacted box is ticked, red until then. Only rows holding an
+ * actual lead are coloured, so the empty sheet below them stays white.
+ */
 function applyConditionalFormatting_(sheet, lastRow) {
   var body = sheet.getRange(2, 1, lastRow, COLUMNS.length);
 
-  var stale = SpreadsheetApp.newConditionalFormatRule()
-    .whenFormulaSatisfied('=AND($A2<>"",$J2=FALSE,$L2>=' + CONFIG.staleDays + ')')
-    .setBackground('#fdecea').setRanges([body]).build();
-
-  var warn = SpreadsheetApp.newConditionalFormatRule()
-    .whenFormulaSatisfied('=AND($A2<>"",$J2=FALSE,$L2>=' + CONFIG.warnDays + ')')
-    .setBackground('#fff4e5').setRanges([body]).build();
-
   var done = SpreadsheetApp.newConditionalFormatRule()
     .whenFormulaSatisfied('=AND($A2<>"",$J2=TRUE)')
-    .setBackground('#eaf5ea').setRanges([body]).build();
+    .setBackground('#d9ead3').setRanges([body]).build();
 
-  sheet.setConditionalFormatRules([stale, warn, done]);
+  // <>TRUE rather than =FALSE, so a blank box counts as outstanding too.
+  var open = SpreadsheetApp.newConditionalFormatRule()
+    .whenFormulaSatisfied('=AND($A2<>"",$J2<>TRUE)')
+    .setBackground('#f4cccc').setRanges([body]).build();
+
+  sheet.setConditionalFormatRules([done, open]);
+}
+
+/**
+ * Re-applies the colour rules to the spreadsheet that already exists.
+ *
+ * Run this after editing applyConditionalFormatting_ — never setup(), which would
+ * build a second spreadsheet and calendar and start writing to the empty ones.
+ */
+function refreshFormatting() {
+  var id = PropertiesService.getScriptProperties().getProperty('SPREADSHEET_ID');
+  if (!id) throw new Error('Nothing to refresh — run setup() first.');
+
+  var ss = SpreadsheetApp.openById(id);
+  var sheet = ss.getSheetByName(CONFIG.sheetName);
+  if (!sheet) throw new Error('Sheet "' + CONFIG.sheetName + '" not found.');
+
+  applyConditionalFormatting_(sheet, 1000);
+  Logger.log('Colour rules refreshed: ' + ss.getUrl());
+  return ss.getUrl();
 }
 
 function installWeeklyTrigger_() {
