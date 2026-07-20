@@ -129,6 +129,11 @@
      outage costs a duplicate email at worst rather than a lost enquiry. */
   var TRACKER_ENDPOINT = "https://script.google.com/macros/s/AKfycbw3G4OoU1faBu57LJzm_Zkjy6ZtNmb-zYZEQzxjE-SbwfuyDkRBhtSYREkO5gg123pZ/exec";
 
+  /* Shown both on a real success and on a honeypot hit, so the two must stay
+     identical — any difference between them tells a bot which field is the trap. */
+  var SUCCESS_MESSAGE = "Thank you! We've got your request and will be in contact " +
+    "with you shortly to set up your free session. 🇺🇸";
+
   var form = document.getElementById("leadForm");
   var note = document.getElementById("formNote");
   if (form) {
@@ -157,14 +162,14 @@
          out of the conversion tracking. */
       var honey = form.querySelector('[name="_honey"]');
       if (honey && honey.value) {
-        note.textContent = "Thank you! Your request is in. We'll reach out within 1 business day. 🇺🇸";
+        note.textContent = SUCCESS_MESSAGE;
         note.className = "contact__form-note success";
         form.reset();
         return;
       }
 
       function onSuccess() {
-        note.textContent = "Thank you! Your request is in. We'll reach out within 1 business day. 🇺🇸";
+        note.textContent = SUCCESS_MESSAGE;
         note.className = "contact__form-note success";
         track("generate_lead", {
           program: (form.querySelector("#program") || {}).value || "",
