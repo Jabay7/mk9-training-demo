@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Milin — MK9 Training | Veteran Owned Dog Training, Oceanside CA</title>
+  <meta name="description" content="Digital business card for MK9 Training — veteran owned dog training in Oceanside, CA. Save the contact, call, text, or follow on Instagram." />
+  <meta name="theme-color" content="#0a1626" />
+  <link rel="icon" href="logo-seal.png" />
+
+  <!-- Shows a proper preview when the card is texted or shared -->
+  <meta property="og:type" content="profile" />
+  <meta property="og:title" content="Milin — MK9 Training" />
+  <meta property="og:description" content="Veteran owned dog training · Oceanside, CA. Tap to save my contact." />
+  <meta property="og:image" content="https://trainwithmk9.com/card/logo-seal.png" />
+  <meta name="twitter:card" content="summary" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --navy-900: #07101e;
+      --navy-800: #0a1626;
+      --navy-700: #0e2038;
+      --blue:     #0a3161;
+      --red:      #c8102e;
+      --gold:     #d4af37;
+      --gold-soft:#e8cf7a;
+      --white:    #ffffff;
+      --muted:    #9fb3cc;
+      --line:     rgba(212, 175, 55, .22);
+      --ease:     cubic-bezier(.22, 1, .36, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    img { max-width: 100%; display: block; }
+    a { text-decoration: none; color: inherit; }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--navy-900);
+      color: var(--white);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: clamp(1rem, 4vw, 2.5rem) 1rem 2rem;
+      /* A soft flag-blue glow behind the seal, and gold light at the base */
+      background-image:
+        radial-gradient(120% 60% at 50% 0%, #143055 0%, transparent 62%),
+        radial-gradient(90% 40% at 50% 100%, rgba(212, 175, 55, .10) 0%, transparent 70%);
+      background-attachment: fixed;
+    }
+
+    .card {
+      width: min(430px, 100%);
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* ---------------- header ---------------- */
+    header { text-align: center; }
+
+    .seal {
+      width: clamp(120px, 34vw, 152px);
+      margin: 0 auto .95rem;
+      filter: drop-shadow(0 14px 30px rgba(0, 0, 0, .55));
+      animation: rise .7s var(--ease) both;
+    }
+
+    .name {
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(2.1rem, 9vw, 2.7rem);
+      letter-spacing: .02em;
+      line-height: 1.05;
+      text-transform: uppercase;
+      background: linear-gradient(180deg, #ffffff 30%, var(--gold-soft) 130%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .org {
+      font-family: 'Oswald', sans-serif;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .26em;
+      font-size: .85rem;
+      color: var(--gold);
+      margin-top: .35rem;
+    }
+
+    .role {
+      color: var(--muted);
+      font-size: .95rem;
+      margin-top: .5rem;
+      /* keeps the tagline from wrapping to a one-word orphan line */
+      max-width: 21rem;
+      margin-inline: auto;
+      text-wrap: balance;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: .5rem;
+      margin-top: 1rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      font-family: 'Oswald', sans-serif;
+      font-size: .7rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .13em;
+      padding: .38rem .75rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .04);
+      color: #cdd9ea;
+    }
+    .badge svg { width: 13px; height: 13px; flex: none; color: var(--gold); }
+
+    /* ---------------- actions ---------------- */
+    .actions { display: grid; gap: .6rem; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+      padding: .95rem 1.05rem;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, .05);
+      font-weight: 600;
+      font-size: 1rem;
+      transition: transform .2s var(--ease), background .2s var(--ease), border-color .2s var(--ease);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn:active { transform: scale(.975); }
+    @media (hover: hover) {
+      .btn:hover { background: rgba(255, 255, 255, .1); border-color: rgba(212, 175, 55, .5); }
+    }
+
+    .btn svg { width: 21px; height: 21px; flex: none; color: var(--gold); }
+    .btn small {
+      display: block;
+      font-weight: 400;
+      font-size: .78rem;
+      color: var(--muted);
+      letter-spacing: .01em;
+    }
+    .btn span { min-width: 0; }
+    .btn b { font-weight: 600; display: block; }
+
+    /* The one action that matters most gets the gold treatment */
+    .btn--primary {
+      background: linear-gradient(135deg, var(--gold) 0%, #c19b2b 100%);
+      border-color: transparent;
+      color: var(--navy-900);
+      box-shadow: 0 14px 30px -12px rgba(212, 175, 55, .65);
+      justify-content: center;
+      font-family: 'Oswald', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      font-size: 1.02rem;
+    }
+    .btn--primary svg { color: var(--navy-900); }
+    @media (hover: hover) {
+      .btn--primary:hover { background: linear-gradient(135deg, #e6c14a 0%, var(--gold) 100%); border-color: transparent; }
+    }
+
+    /* Two-up buttons stack their icon above the label */
+    .row .btn { flex-direction: column; gap: .35rem; text-align: center; padding: .9rem .5rem; }
+
+    /* ---------------- share ---------------- */
+    .share {
+      border-top: 1px solid var(--line);
+      padding-top: 1.4rem;
+      text-align: center;
+    }
+    .share h2 {
+      font-family: 'Oswald', sans-serif;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .2em;
+      font-size: .72rem;
+      color: var(--muted);
+      margin-bottom: .9rem;
+    }
+    .qr {
+      width: 172px;
+      margin: 0 auto;
+      padding: 10px;
+      border-radius: 14px;
+      background: var(--white);
+      box-shadow: 0 16px 40px -18px rgba(0, 0, 0, .8);
+    }
+    .share p { font-size: .82rem; color: var(--muted); margin-top: .85rem; }
+    .share .wallet {
+      color: var(--gold);
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 1px;
+    }
+
+    footer {
+      text-align: center;
+      font-size: .74rem;
+      color: #5b6b80;
+      margin-top: .4rem;
+    }
+    footer a { color: var(--muted); border-bottom: 1px solid var(--line); }
+
+    /* ---------------- motion ---------------- */
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(14px) scale(.94); }
+      to   { opacity: 1; transform: none; }
+    }
+    .card > * { animation: rise .6s var(--ease) both; }
+    .card > *:nth-child(2) { animation-delay: .08s; }
+    .card > *:nth-child(3) { animation-delay: .16s; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, .card > *, .seal { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="card">
+    <header>
+      <img class="seal" src="logo-seal.png" alt="MK9 Training seal — USMC veteran owned" width="152" height="152" />
+      <h1 class="name">Milin</h1>
+      <p class="org">MK9 Training</p>
+      <p class="role">Owner &amp; Trainer · Building the bond between you and your dog</p>
+
+      <div class="badges">
+        <span class="badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.9 6 6.6.9-4.8 4.6 1.2 6.5-5.9-3.1-5.9 3.1 1.2-6.5L2.5 8.9 9.1 8z"/></svg>
+          Veteran Owned
+        </span>
+        <span class="badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.3-7-11a7 7 0 0114 0c0 4.7-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
+          Oceanside, CA
+        </span>
+      </div>
+    </header>
+
+    <nav class="actions">
+      <!-- The download attribute keeps desktop browsers from navigating away;
+           iOS Safari still opens its native "Add to Contacts" sheet. -->
+      <a class="btn btn--primary" href="mk9-training.vcf" download="Milin-MK9-Training.vcf">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>
+        Save My Contact
+      </a>
+
+      <div class="row">
+        <a class="btn" href="tel:+17602715998">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1 1 .4 1.9.7 2.8a2 2 0 01-.5 2.1L8.1 9.9a16 16 0 006 6l1.3-1.2a2 2 0 012.1-.5c.9.3 1.8.6 2.8.7a2 2 0 011.7 2z"/></svg>
+          <span><b>Call</b><small>(760) 271-5998</small></span>
+        </a>
+        <a class="btn" href="sms:+17602715998">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 01-9 8.4 8.9 8.9 0 01-4-.9L3 21l1.9-4.9a8.4 8.4 0 01-.9-3.9 8.4 8.4 0 018.5-8.4h.5a8.4 8.4 0 018 8v.7z"/></svg>
+          <span><b>Text</b><small>Fastest reply</small></span>
+        </a>
+      </div>
+
+      <a class="btn" href="mailto:cali@trainwithmk9.com">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg>
+        <span><b>Email</b><small>cali@trainwithmk9.com</small></span>
+      </a>
+
+      <a class="btn" href="https://instagram.com/mk9_training" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.6" cy="6.4" r="1.2" fill="currentColor" stroke="none"/></svg>
+        <span><b>Instagram</b><small>@mk9_training — see the dogs work</small></span>
+      </a>
+
+      <a class="btn" href="https://trainwithmk9.com" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20 15.3 15.3 0 010-20z"/></svg>
+        <span><b>Website</b><small>Programs, FAQ &amp; free assessment</small></span>
+      </a>
+    </nav>
+
+    <section class="share">
+      <h2>Share this card</h2>
+      <img class="qr" src="qr.png" alt="QR code linking to this digital business card" width="172" height="172" loading="lazy" />
+      <p>Point any phone camera here to open this card.</p>
+      <!-- iOS hands .pkpass straight to Wallet; on anything else it's a plain
+           download, so this stays a quiet secondary link rather than a button. -->
+      <p><a class="wallet" href="mk9-training.pkpass">Or add my card to Apple Wallet</a></p>
+    </section>
+
+    <footer>
+      <a href="https://trainwithmk9.com">trainwithmk9.com</a> · Proudly serving military, veterans &amp; first responders
+    </footer>
+  </main>
+</body>
+</html>
