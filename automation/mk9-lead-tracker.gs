@@ -280,7 +280,7 @@ function appendLead_(lead) {
   if (!id) throw new Error('Not set up yet — run setup() first.');
 
   var sheet = SpreadsheetApp.openById(id).getSheetByName(CONFIG.sheetName);
-  var row = sheet.getLastRow() + 1;
+  var row = nextRow_(sheet);
 
   var followUp = new Date(lead.received.getTime() + CONFIG.followUpHours * 3600 * 1000);
 
@@ -294,6 +294,61 @@ function appendLead_(lead) {
   sheet.getRange(row, COL.daysOpen).setFormula('=IF($A' + row + '="","",INT(NOW()-$A' + row + '))');
   sheet.getRange(row, COL.date).setNumberFormat('yyyy-mm-dd hh:mm');
   sheet.getRange(row, COL.followUp).setNumberFormat('yyyy-mm-dd');
+}
+
+/**
+ * First row with no Date Received.
+ *
+ * Deliberately not getLastRow(). setup() pre-fills the tick box and Days Open
+ * columns all the way down, and Sheets counts those as content, so getLastRow()
+ * reports about 1001 on a tracker with no leads in it at all. Appending after
+ * that put every lead a thousand rows below the headers, where the sheet looks
+ * empty unless you press Ctrl+End.
+ */
+function nextRow_(sheet) {
+  var max = sheet.getMaxRows();
+  var dates = sheet.getRange(2, COL.date, Math.max(max - 1, 1), 1).getValues();
+  for (var i = 0; i < dates.length; i++) {
+    if (dates[i][0] === '' || dates[i][0] === null) return i + 2;
+  }
+  return max + 1;
+}
+
+/**
+ * Moves stray leads back up under the headers.
+ *
+ * Anything appended before the fix above landed around row 1002. This collects
+ * every row that has a Date Received, rewrites them in order from row 2, and
+ * puts back the tick boxes and formulas that clearing wipes out. Run it once.
+ */
+function repairRows() {
+  var id = PropertiesService.getScriptProperties().getProperty('SPREADSHEET_ID');
+  if (!id) throw new Error('Nothing to repair — run setup() first.');
+
+  var ss = SpreadsheetApp.openById(id);
+  var sheet = ss.getSheetByName(CONFIG.sheetName);
+  if (!sheet) throw new Error('Sheet "' + CONFIG.sheetName + '" not found.');
+
+  var span = Math.max(sheet.getMaxRows() - 1, 1);
+  var all = sheet.getRange(2, 1, span, COLUMNS.length).getValues();
+
+  var leads = [];
+  for (var i = 0; i < all.length; i++) {
+    var d = all[i][COL.date - 1];
+    if (d !== '' && d !== null) leads.push(all[i]);
+  }
+
+  sheet.getRange(2, 1, span, COLUMNS.length).clearContent();
+  if (leads.length) sheet.getRange(2, 1, leads.length, COLUMNS.length).setValues(leads);
+
+  // clearContent also removed the pre-filled helpers, so restore them.
+  sheet.getRange(2, COL.contacted, span, 1).insertCheckboxes();
+  sheet.getRange(2, COL.daysOpen, span, 1).setFormula('=IF($A2="","",INT(NOW()-$A2))');
+  sheet.getRange(2, COL.date, span, 1).setNumberFormat('yyyy-mm-dd hh:mm');
+  sheet.getRange(2, COL.followUp, span, 1).setNumberFormat('yyyy-mm-dd');
+
+  Logger.log('Recovered ' + leads.length + ' lead row(s): ' + ss.getUrl());
+  return leads.length;
 }
 
 function createFollowUp_(lead) {
