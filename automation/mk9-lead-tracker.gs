@@ -434,6 +434,37 @@ function clearLeads() {
   return removed;
 }
 
+/**
+ * Removes the follow-up reminders this script created, leaving anything booked
+ * on the calendar by hand untouched. For clearing test data before going live.
+ */
+function clearFollowUps() {
+  var id = PropertiesService.getScriptProperties().getProperty('CALENDAR_ID');
+  if (!id) throw new Error('Run setup() first.');
+
+  var cal = CalendarApp.getCalendarById(id);
+  if (!cal) throw new Error('Calendar not found.');
+
+  // Wide window: reminders sit a day out, but tests may have drifted either way.
+  var from = new Date(Date.now() - 60 * 24 * 3600 * 1000);
+  var to = new Date(Date.now() + 365 * 24 * 3600 * 1000);
+
+  var events = cal.getEvents(from, to);
+  var removed = 0, kept = 0;
+
+  for (var i = 0; i < events.length; i++) {
+    if (events[i].getTitle().indexOf('Follow up: ') === 0) {
+      events[i].deleteEvent();
+      removed++;
+    } else {
+      kept++;
+    }
+  }
+
+  Logger.log('Deleted ' + removed + ' follow-up reminder(s), left ' + kept + ' other event(s) alone.');
+  return removed;
+}
+
 /** Identity of a lead, so the same one is never imported twice. */
 function leadKey_(row) {
   var d = row[COL.date - 1];
