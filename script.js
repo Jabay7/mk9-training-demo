@@ -132,7 +132,7 @@
   /* Shown both on a real success and on a honeypot hit, so the two must stay
      identical — any difference between them tells a bot which field is the trap. */
   var SUCCESS_MESSAGE = "Thank you! We've got your request and will be in contact " +
-    "with you shortly to set up your free session. 🇺🇸";
+    "with you shortly to set up your free session.";
 
   var form = document.getElementById("leadForm");
   var note = document.getElementById("formNote");
