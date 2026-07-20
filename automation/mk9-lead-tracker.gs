@@ -14,6 +14,16 @@
  * To send them elsewhere, add a NOTIFY_EMAIL script property.
  */
 
+/**
+ * Where alerts and the weekly digest should go, if not the account running this.
+ * That address also gets edit access to the sheet and calendar during setup().
+ * Fill it in, then run setup().
+ *
+ * Blank in source control on purpose: this repository is public. Type the address
+ * into the Apps Script editor, not into the repo.
+ */
+var NOTIFY_EMAIL_ON_SETUP = '';
+
 var CONFIG = {
   spreadsheetTitle: 'MK9 Training — Lead Tracker',
   sheetName: 'Leads',
@@ -58,6 +68,11 @@ var RESPONDER_LABELS = {
 
 function setup() {
   var props = PropertiesService.getScriptProperties();
+
+  // Saved before anything else, because sharing below depends on it.
+  if (NOTIFY_EMAIL_ON_SETUP) {
+    props.setProperty('NOTIFY_EMAIL', NOTIFY_EMAIL_ON_SETUP.trim());
+  }
 
   var ss = SpreadsheetApp.create(CONFIG.spreadsheetTitle);
   var sheet = ss.getSheets()[0].setName(CONFIG.sheetName);

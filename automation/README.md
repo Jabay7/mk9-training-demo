@@ -16,47 +16,54 @@ feed a spreadsheet. This script replaces it as the primary destination.
 FormSubmit stays wired up as a fallback, so if this script is ever down or
 mid-redeploy the lead still arrives by email.
 
-## Setup — about ten minutes, once
+## Setup — about five minutes, once
 
-Do this in the Google account that should own the tracker and receive alerts.
+Do this in the Google account that should own the tracker. It does not have to
+be the account that works the leads; step 2 covers that.
 
 1. Go to <https://script.google.com> and click **New project**.
-2. Delete the placeholder `myFunction` code. Paste in all of
-   `mk9-lead-tracker.gs`.
-3. Click the gear (**Project Settings**) and tick
-   **Show "appsscript.json" manifest file in editor**. Return to the editor,
-   open `appsscript.json`, and replace it with the copy from this folder.
-   This grants the script permission to touch Sheets, Calendar, and Gmail.
-4. Rename the project to `MK9 Lead Tracker` so it is recognisable later.
-5. In the function dropdown choose **setup**, then click **Run**.
-   Google will ask for authorization. It warns that the app is not verified —
-   expected for a private script. Choose **Advanced → Go to MK9 Lead Tracker
-   (unsafe)** and allow.
-   This creates the spreadsheet and the calendar, schedules the Monday digest,
-   and emails you the links.
-6. Click **Deploy → New deployment**. Choose type **Web app**, then set:
-   - Description: `MK9 form endpoint`
-   - Execute as: **Me**
-   - Who has access: **Anyone**
+2. Delete the placeholder `myFunction` code and paste in all of
+   `mk9-lead-tracker.gs`. Near the top, set the alert address:
 
-   Click **Deploy**, then copy the **Web app URL**. It ends in `/exec`.
-7. Send that URL to whoever maintains the website. It goes into
-   `script.js` as `TRACKER_ENDPOINT`, and submissions start flowing.
+   ```js
+   var NOTIFY_EMAIL_ON_SETUP = 'someone@example.com';
+   ```
 
-### Running it from one account for someone else
+   Leave it empty to send alerts to yourself. Whoever is named here also gets
+   edit access to the sheet and the calendar.
+3. In the function dropdown choose **setup**, then click **Run**. Google asks
+   for authorization and warns that the app is not verified — expected for a
+   private script. Choose **Advanced → Go to Untitled project (unsafe)** and
+   allow.
 
-The tracker is created inside whichever account runs `setup()`. To build it in
-your own Drive while someone else works the leads, set `NOTIFY_EMAIL` **before**
-running `setup()`: open **Project Settings → Script Properties**, add a property
-named `NOTIFY_EMAIL`, and set it to their address.
+   This builds the spreadsheet and calendar, shares them, schedules the Monday
+   digest, and emails out the links.
+4. Click **Deploy → New deployment**, choose type **Web app**, then set
+   **Execute as: Me** and **Who has access: Anyone**. Click **Deploy** and copy
+   the **Web app URL** — it ends in `/exec`.
+5. Send that URL to whoever maintains the website. It goes into `script.js` as
+   `TRACKER_ENDPOINT`, and submissions start flowing.
 
-`setup()` then grants that address edit access to both the spreadsheet and the
-calendar, and every alert and digest goes to them. The setup confirmation is sent
-to both of you. Set the property first — sharing happens during setup, so adding
-it afterwards means sharing the sheet by hand.
+`appsscript.json` in this folder is optional. Apps Script works out which
+permissions it needs from the code itself. Paste it in (**Project Settings →
+Show "appsscript.json" manifest file in editor**) only if you want to pin the
+timezone to Pacific or read the full list of scopes before authorizing.
 
-The address is deliberately never written into the code, because the website
-repository is public.
+### Building it in one account for someone else to use
+
+The tracker lives wherever `setup()` runs. Naming someone else in
+`NOTIFY_EMAIL_ON_SETUP` gives them edit access to the sheet and calendar and
+sends them every alert and digest, while the files stay in your Drive. The
+setup confirmation goes to both of you.
+
+### Changing the alert address later
+
+`NOTIFY_EMAIL_ON_SETUP` is only read while `setup()` runs. To redirect alerts
+afterwards, open **Project Settings → Script Properties** and edit the
+`NOTIFY_EMAIL` value. Sharing is not revisited, so grant the new address access
+to the sheet by hand if it needs it.
+
+The address is never written into this repository, which is public.
 
 ## What the sheet tracks
 
