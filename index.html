@@ -49,7 +49,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="icon" type="image/jpeg" href="logo.jpeg" />
   <link rel="apple-touch-icon" href="logo.jpeg" />
-  <link rel="stylesheet" href="styles.css" />
+  <!-- ?v= is a cache buster. GitHub Pages serves these with max-age=600, so without
+       it a returning visitor can run up to ten minutes of stale CSS or JS against
+       fresh HTML. Bump the number on both styles.css and script.js whenever either
+       one changes; the new URL forces browsers to fetch rather than reuse. -->
+  <link rel="stylesheet" href="styles.css?v=2" />
 </head>
 <body>
 
@@ -631,6 +635,7 @@
   }
   </script>
 
-  <script src="script.js"></script>
+  <!-- Bump ?v= together with the stylesheet in <head> when either file changes. -->
+  <script src="script.js?v=2"></script>
 </body>
 </html>

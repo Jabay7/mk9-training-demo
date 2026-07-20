@@ -65,3 +65,27 @@ yet. To make it actually deliver leads, pick one (all free to start):
 
 Drag-and-drop the folder onto **Netlify Drop** (netlify.com/drop) or **Vercel**, or use
 **GitHub Pages**. All free, all support a custom domain like `trainwithmk9.com`.
+
+## Shipping changes to CSS or JS
+
+`index.html` loads the stylesheet and script with a version tag:
+
+```html
+<link rel="stylesheet" href="styles.css?v=2" />
+<script src="script.js?v=2"></script>
+```
+
+**Bump both numbers together whenever you edit `styles.css` or `script.js`.** The
+changed URL is a different file as far as the browser is concerned, so it fetches
+instead of reusing what it has.
+
+This matters because GitHub Pages serves everything with `Cache-Control: max-age=600`.
+Without the bump, a returning visitor can spend ten minutes running old CSS or JS
+against new HTML — which is exactly how a contact form once appeared to work while
+posting to an endpoint that had already been replaced.
+
+Worth being clear about what this does not fix: `index.html` is cached for ten
+minutes too, so a returning visitor may not see the new version tag straight away.
+What the bump guarantees is that HTML and assets always move together, rather than
+the page ending up with a mismatched pair. To confirm a deploy yourself, hard-refresh
+with `Ctrl+Shift+R` (`Cmd+Shift+R` on a Mac), which bypasses the cache entirely.
