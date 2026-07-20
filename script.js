@@ -134,6 +134,30 @@
   var SUCCESS_MESSAGE = "Thank you! We've got your request and will be in contact " +
     "with you shortly to set up your free session.";
 
+  /* Format the phone field as it is typed, so the tracker, the alert email and the
+     click-to-call link all get (760) 271-5998 rather than a run of ten digits.
+     Formatting here rather than on submit means the visitor sees it too, which is
+     also the moment a mistyped number is easiest to spot. */
+  var phoneField = document.getElementById("phone");
+  if (phoneField) {
+    phoneField.addEventListener("input", function () {
+      var caretAtEnd = phoneField.selectionStart === phoneField.value.length;
+      var d = phoneField.value.replace(/\D/g, "");
+      if (d.length === 11 && d.charAt(0) === "1") d = d.slice(1);  // tolerate a leading 1
+      d = d.slice(0, 10);
+
+      var out = d;
+      if (d.length > 6) out = "(" + d.slice(0, 3) + ") " + d.slice(3, 6) + "-" + d.slice(6);
+      else if (d.length > 3) out = "(" + d.slice(0, 3) + ") " + d.slice(3);
+      else if (d.length > 0) out = "(" + d;
+
+      phoneField.value = out;
+      // Only chase the caret to the end when it was already there, so editing
+      // mid-number does not yank the cursor away.
+      if (caretAtEnd) phoneField.setSelectionRange(out.length, out.length);
+    });
+  }
+
   var form = document.getElementById("leadForm");
   var note = document.getElementById("formNote");
   if (form) {

@@ -266,13 +266,29 @@ function parseLead_(e) {
     received: new Date(),
     name: String(p.name || '').trim() || '(no name given)',
     email: String(p.email || '').trim(),
-    phone: String(p.phone || '').trim(),
+    phone: formatPhone_(p.phone),
     program: PROGRAM_LABELS[p.program] || String(p.program || '').trim() || '—',
     responder: RESPONDER_LABELS[p.service !== undefined ? p.service : ''] ||
                String(p.service || '').trim() || '—',
     comments: String(p.dog || p.comments || '').trim(),
     source: String(p.source || 'Website').trim()
   };
+}
+
+/**
+ * Renders a ten-digit US number as (760) 271-5998.
+ *
+ * The website formats the field as it is typed, so this is a backstop for
+ * anything that arrives unformatted. Anything that is not ten digits is passed
+ * through untouched rather than mangled — an international or partial number is
+ * still more useful to read than a wrongly reformatted one.
+ */
+function formatPhone_(raw) {
+  var s = String(raw || '').trim();
+  var d = s.replace(/\D/g, '');
+  if (d.length === 11 && d.charAt(0) === '1') d = d.slice(1);
+  if (d.length !== 10) return s;
+  return '(' + d.slice(0, 3) + ') ' + d.slice(3, 6) + '-' + d.slice(6);
 }
 
 function appendLead_(lead) {
