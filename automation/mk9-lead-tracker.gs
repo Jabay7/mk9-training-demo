@@ -455,29 +455,39 @@ function clearLeads() {
  * on the calendar by hand untouched. For clearing test data before going live.
  */
 function clearFollowUps() {
+  // Every setup() run created its own calendar, all called "MK9 Training", and
+  // reminders went to whichever was current at the time. Sweeping only the one
+  // in properties leaves the rest behind, so gather every calendar by that name
+  // as well as the recorded one.
+  var cals = CalendarApp.getCalendarsByName(CONFIG.calendarName) || [];
   var id = PropertiesService.getScriptProperties().getProperty('CALENDAR_ID');
-  if (!id) throw new Error('Run setup() first.');
-
-  var cal = CalendarApp.getCalendarById(id);
-  if (!cal) throw new Error('Calendar not found.');
+  if (id) {
+    var current = CalendarApp.getCalendarById(id);
+    if (current && !cals.some(function (c) { return c.getId() === current.getId(); })) {
+      cals.push(current);
+    }
+  }
+  if (!cals.length) throw new Error('No "' + CONFIG.calendarName + '" calendar found.');
 
   // Wide window: reminders sit a day out, but tests may have drifted either way.
   var from = new Date(Date.now() - 60 * 24 * 3600 * 1000);
   var to = new Date(Date.now() + 365 * 24 * 3600 * 1000);
 
-  var events = cal.getEvents(from, to);
   var removed = 0, kept = 0;
-
-  for (var i = 0; i < events.length; i++) {
-    if (events[i].getTitle().indexOf('Follow up: ') === 0) {
-      events[i].deleteEvent();
-      removed++;
-    } else {
-      kept++;
+  for (var c = 0; c < cals.length; c++) {
+    var events = cals[c].getEvents(from, to);
+    for (var i = 0; i < events.length; i++) {
+      if (events[i].getTitle().indexOf('Follow up: ') === 0) {
+        events[i].deleteEvent();
+        removed++;
+      } else {
+        kept++;
+      }
     }
   }
 
-  Logger.log('Deleted ' + removed + ' follow-up reminder(s), left ' + kept + ' other event(s) alone.');
+  Logger.log('Swept ' + cals.length + ' calendar(s) named "' + CONFIG.calendarName +
+             '". Deleted ' + removed + ' follow-up reminder(s), left ' + kept + ' other event(s) alone.');
   return removed;
 }
 
