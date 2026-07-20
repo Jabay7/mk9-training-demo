@@ -491,6 +491,45 @@ function clearFollowUps() {
   return removed;
 }
 
+/**
+ * Deletes the duplicate calendars left behind by repeated setup() runs.
+ *
+ * Every setup() created a calendar with the same name, so the calendar list ends
+ * up with several identical entries and only one of them receives reminders.
+ * Keeps the calendar recorded in CALENDAR_ID and removes the rest, skipping any
+ * that holds an event this script did not create so a hand-booked session can
+ * never be destroyed by a name collision.
+ */
+function removeDuplicateCalendars() {
+  var keepId = PropertiesService.getScriptProperties().getProperty('CALENDAR_ID');
+  if (!keepId) throw new Error('Run setup() first.');
+
+  var cals = CalendarApp.getCalendarsByName(CONFIG.calendarName) || [];
+  var from = new Date(Date.now() - 365 * 24 * 3600 * 1000);
+  var to = new Date(Date.now() + 365 * 24 * 3600 * 1000);
+
+  var deleted = 0, kept = 0, skipped = [];
+
+  for (var i = 0; i < cals.length; i++) {
+    var c = cals[i];
+    if (c.getId() === keepId) { kept++; continue; }
+
+    var foreign = 0;
+    var events = c.getEvents(from, to);
+    for (var j = 0; j < events.length; j++) {
+      if (events[j].getTitle().indexOf('Follow up: ') !== 0) foreign++;
+    }
+    if (foreign) { skipped.push(c.getId() + ' holds ' + foreign + ' event(s) we did not create'); continue; }
+
+    c.deleteCalendar();
+    deleted++;
+  }
+
+  Logger.log('Kept ' + kept + ' calendar (' + keepId + '). Deleted ' + deleted + ' duplicate(s).' +
+             (skipped.length ? ' Skipped: ' + skipped.join('; ') : ' Nothing skipped.'));
+  return deleted;
+}
+
 /** Identity of a lead, so the same one is never imported twice. */
 function leadKey_(row) {
   var d = row[COL.date - 1];
