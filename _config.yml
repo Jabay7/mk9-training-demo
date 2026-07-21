@@ -1,0 +1,10 @@
+# GitHub Pages builds this site with Jekyll, which copies every file in the
+# repository to trainwithmk9.com unless it is excluded here.
+#
+# The files below are working documents, not part of the website. They were
+# being served publicly and were reachable by search engines, so they are kept
+# in the repository for version history but no longer published.
+exclude:
+  - README.md
+  - content-calendar.md
+  - automation/

@@ -15,7 +15,6 @@
   <meta property="og:url" content="https://trainwithmk9.com/" />
   <meta property="og:site_name" content="MK9 Training" />
   <meta property="og:locale" content="en_US" />
-  <!-- TODO: replace logo.jpeg with a 1200x630 social share image for best results -->
   <meta property="og:image" content="https://trainwithmk9.com/logo.jpeg" />
   <meta property="og:image:alt" content="MK9 Training — Veteran Owned Dog Training" />
 
@@ -25,24 +24,11 @@
   <meta name="twitter:description" content="Built on the bond between you and your dog. Veteran owned &amp; operated." />
   <meta name="twitter:image" content="https://trainwithmk9.com/logo.jpeg" />
 
-  <!-- ===== Google Analytics 4 — REPLACE G-XXXXXXXXXX with your Measurement ID (Admin → Data Streams) ===== -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){ dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', 'G-XXXXXXXXXX');
-  </script>
-  <!-- ===== Meta (Facebook) Pixel — optional, for ads. Uncomment and add your Pixel ID when running ads. =====
-  <script>
-    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
-    document,'script','https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', 'YOUR_PIXEL_ID'); fbq('track', 'PageView');
-  </script>
-  ===== end Meta Pixel ===== -->
+  <!-- No analytics loaded. The previous GA4 tag still carried the placeholder
+       measurement id, so every visit fetched googletagmanager.com and handed
+       Google a pageview against an id that collects nothing. To switch it on,
+       add a real GA4 tag here; script.js already reports form and call
+       conversions through window.gtag as soon as one exists. -->
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -565,9 +551,7 @@
 
   <a href="#contact" class="sticky-cta" id="stickyCta">Claim Free Session</a>
 
-  <!-- ===== Structured data for Google (LocalBusiness) =====
-       TODO: add "streetAddress" + "postalCode", real "openingHoursSpecification",
-       and your Instagram/Facebook URLs under "sameAs" when available. -->
+  <!-- ===== Structured data for Google (LocalBusiness) ===== -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
