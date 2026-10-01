@@ -14,7 +14,6 @@
   var stage = document.getElementById('mascot');
   var badge = stage && stage.querySelector('.badge');
   var corner = document.getElementById('k9Corner');
-  var pauseBtn = document.getElementById('mascotPause');
   var reduced = matchMedia('(prefers-reduced-motion: reduce)');
   var fine = matchMedia('(hover: hover) and (pointer: fine)');
   var clamp = function (v, a, b) { return Math.max(a, Math.min(b, v)); };
@@ -300,15 +299,6 @@
   function stopAll() { Object.keys(dogs).forEach(function (k) { dogs[k].stop(); delete dogs[k]; }); }
   bootAll();
 
-  function syncPause() {
-    if (!pauseBtn) return;
-    pauseBtn.hidden = reduced.matches;
-    pauseBtn.textContent = att.paused ? 'Resume motion' : 'Pause motion';
-    pauseBtn.setAttribute('aria-pressed', String(att.paused));
-  }
-  if (pauseBtn) pauseBtn.addEventListener('click', function () { att.paused = !att.paused; syncPause(); });
-  reduced.addEventListener('change', syncPause);
-  syncPause();
   window.addEventListener('pagehide', function (e) { if (!e.persisted) stopAll(); });
   window.addEventListener('pageshow', function (e) { if (e.persisted) bootAll(); });
 })();
