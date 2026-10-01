@@ -65,9 +65,9 @@
   }
 
   /* each dog's gaze: cursor on desktop, scroll and finger on phones, then idle look around */
-  function makeTarget(look) {
+  function makeTarget(look, mod) {
     var st = { nextGlance: 0, idle: null };
-    return function (t) {
+    var base = function (t) {
       if (reduced.matches || att.paused) return { x: 0, y: 0 };
       if (!fine.matches) {
         if (t - touch.at < 1.6) { st.nextGlance = t + 1.2; return look(touch.px, touch.py); }
@@ -90,6 +90,7 @@
       }
       return st.idle || { x: 0, y: 0 };
     };
+    return mod ? function (t) { return mod(t, base(t)); } : base;
   }
 
   /* blinking, one schedule per dog so they never blink in unison */
@@ -203,7 +204,7 @@
     gl.uniform4f(U.u_view, o.view[0], o.view[1], o.view[2], o.view[3]);
     gl.clearColor(0, 0, 0, 0);
 
-    var target = makeTarget(o.look), blink = makeBlink();
+    var target = makeTarget(o.look, o.mod), blink = makeBlink();
     var hx = spring(38, 7.5), hy = spring(38, 7.5);   // head: weighty, slight overshoot
     var ex = spring(160, 16), ey = spring(160, 16);   // eyes: quick, they lead the head
     var prevHx = 0;
@@ -231,6 +232,27 @@
     return { stop: function () { l.stop(); ro.disconnect(); gl.deleteTexture(tex); gl.deleteBuffer(buf); gl.deleteProgram(prog); } };
   }
 
+  /* ---------- the corner dog's "Woof!" ----------
+     Pops in after load, then now and then; stays put for reduced motion or pause. */
+  var woof = { el: corner && corner.querySelector('.k9-corner__woof'), timer: 0, until: 0 };
+  function showWoof(ms) {
+    if (!woof.el) return;
+    woof.el.classList.add('is-on');
+    woof.until = now() + 0.5;
+    clearTimeout(woof.timer);
+    woof.timer = setTimeout(function () {
+      if (reduced.matches || att.paused) return;                           // keep it showing while motion is off
+      woof.el.classList.remove('is-on');
+      woof.timer = setTimeout(function () { showWoof(3000); }, 14000 + Math.random() * 10000);
+    }, ms);
+  }
+  function startWoof() {
+    if (!woof.el) return;
+    if (reduced.matches) { woof.el.classList.add('is-on'); return; }
+    woof.timer = setTimeout(function () { showWoof(3800); }, 1400);
+  }
+  function stopWoof() { clearTimeout(woof.timer); if (woof.el) woof.el.classList.remove('is-on'); }
+
   /* ---------- the two dogs ---------- */
   var dogs = {};
   var span = 1 / (1 - 2 * PAD);
@@ -252,10 +274,16 @@
         view: [0.0, -0.06, 0.9, 0.9],
         look: makeLook(cv, 0.5, 0.3, 520),
         watch: corner,
-        maxDpr: 2
+        maxDpr: 2,
+        mod: function (t, g) {                                              // a quick upward nod as he says it
+          if (reduced.matches || att.paused || t > woof.until) return g;
+          var p = 1 - (woof.until - t) / 0.5;
+          return { x: g.x * 0.6, y: Math.max(-1, g.y - Math.sin(Math.min(p, 1) * Math.PI) * 0.7) };
+        }
       });
       corner.classList.add('is-live');
-      return { stop: function () { d.stop(); corner.classList.remove('is-live'); } };
+      startWoof();
+      return { stop: function () { d.stop(); stopWoof(); corner.classList.remove('is-live'); } };
     }
   };
 
