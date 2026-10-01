@@ -1,0 +1,105 @@
+/* ============ MASCOT HERO ============
+   The hero takes on the original MK9 badge: its dusty blue paper ground,
+   navy ring, flag disc and gold lettering. The dog is a separate layer
+   drawn in WebGL so it can look around and blink in front of the badge. */
+.mhero {
+  --mh-bg: #0a1626;        /* site navy */
+  --mh-bg-hi: #0e2038;
+  --mh-navy: #ffffff;      /* headline + outlines: white on navy */
+  --mh-ink: #ffffff;
+  --mh-text: #d5deea;
+  --mh-gold: #f3d87c;      /* logo lettering */
+  --mh-cream: #f4ecd6;
+  position: relative; overflow: hidden;
+  background:
+    var(--mh-bg);
+  color: var(--mh-ink);
+}
+/* paper grain, like the printed logo */
+.mhero::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .12; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .2 0 0 0 0 .25 0 0 0 0 .3 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.mhero__inner {
+  position: relative;
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.02fr);
+  align-items: center; gap: clamp(1.5rem, 4vw, 3.5rem);
+  padding-block: clamp(2.5rem, 6vh, 4.5rem) clamp(2.5rem, 6vh, 4rem);
+}
+.mhero .eyebrow { color: #cdd8e8; }
+.mhero .eyebrow__dot { box-shadow: 0 0 0 4px rgba(200, 16, 46, .25); }
+.mhero__content { text-shadow: 0 2px 18px rgba(4, 12, 24, .55); }
+.mhero__title {
+  font-family: 'Anton', sans-serif; font-weight: 400; text-transform: uppercase;
+  font-size: clamp(2.7rem, 5.6vw, 5rem); line-height: 1; letter-spacing: .5px;
+  margin: 1.1rem 0 1.3rem; text-wrap: balance; color: var(--mh-navy);
+}
+.mhero__title .red-text { color: var(--red); }
+.mhero__sub { font-size: 1.1rem; line-height: 1.65; color: var(--mh-text); max-width: 520px; margin-bottom: 1.9rem; }
+.mhero__sub strong { color: var(--mh-ink); }
+.mhero__cta { display: flex; gap: .8rem; flex-wrap: wrap; margin-bottom: 1.9rem; }
+.mhero .btn--ghost { background: transparent; color: var(--mh-navy); border-color: var(--mh-navy); backdrop-filter: none; }
+.mhero .btn--ghost:hover { background: #fff; color: var(--navy-800); }
+.mhero__trust { display: flex; flex-direction: column; gap: .55rem; }
+.mhero__trust li { display: flex; align-items: center; gap: .6rem; color: var(--mh-text); font-size: .96rem; }
+.mhero__trust svg { color: var(--red); flex: none; }
+.mhero__trust em { color: var(--mh-ink); font-weight: 600; }
+.mhero__where { margin-top: 1.6rem; font-family: 'Oswald', sans-serif; letter-spacing: .1em; text-transform: uppercase; font-size: .85rem; color: var(--mh-navy); }
+.mhero__where a { color: inherit; border-bottom: 1px solid currentColor; }
+
+/* ---- badge + dog stage ---- */
+.mascot { position: relative; width: 100%; max-width: min(620px, calc(100svh - 150px)); min-width: min(100%, 360px); aspect-ratio: 1; justify-self: end; }
+.badge { position: absolute; inset: 0; width: 100%; height: 100%; filter: drop-shadow(0 28px 50px rgba(0, 0, 0, .55)); transition: transform .2s linear; }
+.badge__mk9 { font-family: 'Lilita One', 'Anton', sans-serif; font-size: 150px; letter-spacing: 6px; fill: var(--mh-gold); }
+.badge__usmc { font-family: 'Lilita One', 'Anton', sans-serif; font-size: 74px; letter-spacing: 3px; fill: var(--mh-gold); }
+
+/* the dog layer: its box is padded 8% on every side so head movement never clips */
+.mascot__dog { position: absolute; left: 22.74%; top: 28.24%; width: 59.5%; height: 59.5%; pointer-events: none; }
+.mascot__dog > img { position: absolute; inset: 8%; width: 84%; height: 84%; transition: opacity .15s linear; }
+.mascot__dog > canvas { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity .25s ease .1s; }
+.mascot.is-live .mascot__dog > canvas { opacity: 1; }
+.mascot.is-live .mascot__dog > img { opacity: 0; }
+
+.mhero__pause {
+  position: absolute; right: 0; bottom: -4px; z-index: 2;
+  font: 500 .74rem 'Inter', sans-serif; color: #fff;
+  background: rgba(7, 16, 30, .6); border: 1px solid rgba(255, 255, 255, .3); border-radius: 999px;
+  padding: .35rem .75rem; cursor: pointer;
+}
+.mhero__pause:focus-visible { outline: 2px solid var(--mh-navy); outline-offset: 2px; }
+
+@media (max-width: 980px) {
+  .mhero__inner { grid-template-columns: minmax(0, 1fr); }
+  .mhero__inner > * { min-width: 0; }
+  .mascot { justify-self: center; max-width: 460px; }
+}
+
+/* ---- still American flag filling the hero background ---- */
+/* the whole flag at its true 19:10 shape, anchored right and fading into the navy
+   on its left edge, so the star field sits mid hero instead of owning the screen */
+.mhero__flag {
+  position: absolute; z-index: 0; pointer-events: none;
+  right: 0; top: 50%; width: min(82%, 1250px); height: auto; aspect-ratio: 19 / 10;
+  transform: translateY(-50%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 26%), linear-gradient(180deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
+  -webkit-mask-composite: source-in;
+          mask-image: linear-gradient(90deg, transparent 0%, #000 26%), linear-gradient(180deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
+          mask-composite: intersect;
+}
+@media (max-width: 980px) {
+  .mhero__flag { width: 150%; right: -25%; top: 0; transform: none;
+    -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent 100%); mask-image: linear-gradient(180deg, #000 55%, transparent 100%); }
+}
+.mhero::before { z-index: 1; }
+/* dusty blue wash from the logo: strong behind the copy, lighter behind the badge */
+.mhero::after {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    radial-gradient(55% 70% at 22% 52%, rgba(7,16,30,.55) 0%, rgba(7,16,30,0) 100%),
+    linear-gradient(90deg, rgba(7,16,30,.5) 0%, rgba(7,16,30,.35) 45%, rgba(10,22,38,.15) 70%, rgba(10,22,38,.08) 100%),
+    linear-gradient(180deg, rgba(7,16,30,0) 70%, rgba(7,16,30,.6) 100%);
+}
+.mhero__inner { z-index: 2; }
+@media (max-width: 980px) {
+  .mhero::after { background: linear-gradient(180deg, rgba(7,16,30,.62) 0%, rgba(7,16,30,.7) 45%, rgba(7,16,30,.78) 100%); }
+}

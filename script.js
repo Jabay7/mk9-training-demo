@@ -8,18 +8,77 @@
   var yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-  /* ---- Analytics helper (safe no-op until GA4 / Meta Pixel is configured) ---- */
-  function track(name, params) {
-    try { if (typeof window.gtag === "function") window.gtag("event", name, params || {}); } catch (e) {}
-    try { if (typeof window.fbq === "function") window.fbq("trackCustom", name, params || {}); } catch (e) {}
+  /* ---- Analytics configuration ----
+     Paste the real ids here to switch tracking on. Both are public identifiers,
+     meant to be readable in page source, so they are safe to commit; nothing
+     secret belongs in this file.
+
+     Leave either one empty and that tag does not load at all: no script is
+     fetched and no request is made. Empty means genuinely off rather than "on
+     and pointing nowhere", which is the state a placeholder id would create. */
+  var GA4_MEASUREMENT_ID = "";   // e.g. "G-XXXXXXXXXX"
+  var META_PIXEL_ID      = "";   // a long number
+
+  function loadGA4(id) {
+    if (!id) return;
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () { window.dataLayer.push(arguments); };
+    window.gtag("js", new Date());
+    window.gtag("config", id);
+    var s = document.createElement("script");
+    s.async = true;
+    s.src = "https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(id);
+    document.head.appendChild(s);
   }
 
-  /* ---- Track CTA + phone clicks (conversion signals) ---- */
+  function loadMetaPixel(id) {
+    if (!id || window.fbq) return;
+    var n = window.fbq = function () {
+      n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+    };
+    if (!window._fbq) window._fbq = n;
+    n.push = n; n.loaded = true; n.version = "2.0"; n.queue = [];
+    var s = document.createElement("script");
+    s.async = true;
+    s.src = "https://connect.facebook.net/en_US/fbevents.js";
+    document.head.appendChild(s);
+    window.fbq("init", id);
+    window.fbq("track", "PageView");
+  }
+
+  /* Both loaders build their <script> element rather than running inline, so the
+     Content-Security-Policy in index.html can allow the two vendor hosts by name
+     without also needing 'unsafe-inline', which would have undone most of what
+     the policy is there for. */
+  try { loadGA4(GA4_MEASUREMENT_ID); } catch (e) {}
+  try { loadMetaPixel(META_PIXEL_ID); } catch (e) {}
+
+  /* ---- Analytics helper (safe no-op while either tag is unconfigured) ----
+     Meta optimises delivery far better on its own standard events than on custom
+     ones, so the two that represent a real conversion are mapped across. Anything
+     unmapped still goes through as a custom event. */
+  var FB_STANDARD = { generate_lead: "Lead", phone_click: "Contact", sms_click: "Contact" };
+
+  function track(name, params) {
+    try { if (typeof window.gtag === "function") window.gtag("event", name, params || {}); } catch (e) {}
+    try {
+      if (typeof window.fbq === "function") {
+        var std = FB_STANDARD[name];
+        if (std) window.fbq("track", std, params || {});
+        else window.fbq("trackCustom", name, params || {});
+      }
+    } catch (e) {}
+  }
+
+  /* ---- Track CTA, phone, email, SMS and social clicks (conversion signals) ---- */
   document.addEventListener("click", function (e) {
     var a = e.target.closest ? e.target.closest("a") : null;
     if (!a) return;
     var href = a.getAttribute("href") || "";
     if (href.indexOf("tel:") === 0) { track("phone_click", { phone: href.replace("tel:", "") }); return; }
+    if (href.indexOf("sms:") === 0) { track("sms_click", {}); return; }
+    if (href.indexOf("mailto:") === 0) { track("email_click", {}); return; }
+    if (href.indexOf("instagram.com") > -1) { track("social_click", { network: "instagram" }); return; }
     if (a.classList.contains("btn--primary") || a.classList.contains("topbar__cta") ||
         a.classList.contains("sticky-cta") || a.classList.contains("nav__cta") || href === "#contact") {
       track("cta_click", { label: (a.textContent || "").trim().slice(0, 60) });
@@ -110,23 +169,12 @@
   });
 
   /* ---- Lead form (validation + delivery) ----
-     Delivery runs through FormSubmit, which needs no account. Submissions are emailed
-     to the address in the endpoint below.
-
-     NOTE: the very first submission triggers a one-time activation email to that address.
-     Until someone clicks the link in it, submissions are accepted but NOT forwarded.
-
-     Optional hardening: once activated, FormSubmit issues a random alias. Swapping the
-     address here for "https://formsubmit.co/ajax/<alias>" keeps the inbox out of the
-     page source. Setting this back to "" restores demo mode (confirms but never sends). */
+     Email fallback. Setting this to "" confirms on screen without sending. */
   var FORM_ENDPOINT = "https://formsubmit.co/ajax/cali@trainwithmk9.com";
 
-  /* Primary destination: the Apps Script lead tracker, which logs the submission to
-     the spreadsheet, books a follow-up on the calendar, and emails an alert. Paste
-     its web app URL here once deployed (it ends in /exec) — see automation/README.md.
-     While this is "", submissions go straight to FORM_ENDPOINT above, which only
-     emails. FORM_ENDPOINT stays wired up either way as the fallback, so a tracker
-     outage costs a duplicate email at worst rather than a lost enquiry. */
+  /* Primary destination: the Apps Script lead tracker (spreadsheet, calendar
+     follow-up, alert email). FORM_ENDPOINT above stays wired up as the fallback,
+     so a tracker outage costs a duplicate email rather than a lost enquiry. */
   var TRACKER_ENDPOINT = "https://script.google.com/macros/s/AKfycby7DvKedtDkCiv99QkjczzA3_TY5tBeDRsSVQXOuEA3wjZphhvMvyEM-JVrm_w4JYYQ/exec";
 
   /* Shown both on a real success and on a honeypot hit, so the two must stay
@@ -134,10 +182,8 @@
   var SUCCESS_MESSAGE = "Thank you! We've got your request and will be in contact " +
     "with you shortly to set up your free session.";
 
-  /* Format the phone field as it is typed, so the tracker, the alert email and the
-     click-to-call link all get (760) 271-5998 rather than a run of ten digits.
-     Formatting here rather than on submit means the visitor sees it too, which is
-     also the moment a mistyped number is easiest to spot. */
+  /* Format the phone field as it is typed, so the tracker and the alert email get
+     a readable number and the visitor can spot a mistype. */
   var phoneField = document.getElementById("phone");
   if (phoneField) {
     phoneField.addEventListener("input", function () {
@@ -160,6 +206,28 @@
 
   var form = document.getElementById("leadForm");
   var note = document.getElementById("formNote");
+
+  /* Form engagement. Without these, a month of zero leads looks identical whether
+     nobody reached the form or everybody abandoned it, and those two problems have
+     opposite fixes. */
+  if (form) {
+    var formStarted = false;
+    form.addEventListener("focusin", function () {
+      if (formStarted) return;
+      formStarted = true;
+      track("form_start", {});
+    }, { passive: true });
+
+    if ("IntersectionObserver" in window) {
+      var fo = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) { track("view_form", {}); fo.unobserve(en.target); }
+        });
+      }, { threshold: 0.5 });
+      fo.observe(form);
+    }
+  }
+
   if (form) {
     form.addEventListener("submit", function (e) {
       e.preventDefault();
@@ -179,11 +247,9 @@
         return;
       }
 
-      /* Spam trap. FormSubmit does not enforce _honey on its /ajax/ endpoint (confirmed by
-         testing: submissions with the field filled were still delivered), so the honeypot
-         is enforced here instead. A bot that fills every field sees the normal confirmation
-         and nothing is sent. Deliberately does not call onSuccess, so fake submissions stay
-         out of the conversion tracking. */
+      /* Spam trap. FormSubmit does not enforce _honey on its /ajax/ endpoint, so the
+         honeypot is enforced here. A bot sees the normal confirmation and nothing is
+         sent. Deliberately skips onSuccess, keeping fakes out of the tracking. */
       var honey = form.querySelector('[name="_honey"]');
       if (honey && honey.value) {
         note.textContent = SUCCESS_MESSAGE;
@@ -216,8 +282,7 @@
       payload.append("_captcha", "false");
 
       /* Both endpoints answer HTTP 200 even when they have not accepted the
-         submission, so the response body decides. Trusting res.ok alone is what
-         used to report a cheerful success while the lead went nowhere. */
+         submission, so the response body decides rather than res.ok. */
       function post(url) {
         if (!url) return Promise.reject(new Error("no endpoint configured"));
         return fetch(url, {

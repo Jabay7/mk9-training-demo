@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data: https://www.facebook.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' https://www.googletagmanager.com https://connect.facebook.net; connect-src 'self' https://formsubmit.co https://script.google.com https://script.googleusercontent.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://stats.g.doubleclick.net https://connect.facebook.net https://www.facebook.com; form-action 'self'; frame-src 'none'; upgrade-insecure-requests" />
   <title>MK9 Training | Veteran Owned Dog Training, Built on the Bond</title>
   <meta name="description" content="MK9 Training is a veteran owned, results driven dog training program offering a Day Program and selective Board &amp; Train. We build the bond between you and your dog. Proudly serving military, veterans, and all first responders." />
   <meta name="theme-color" content="#0a1626" />
@@ -24,22 +25,19 @@
   <meta name="twitter:description" content="Built on the bond between you and your dog. Veteran owned &amp; operated." />
   <meta name="twitter:image" content="https://trainwithmk9.com/logo.jpeg" />
 
-  <!-- No analytics loaded. The previous GA4 tag still carried the placeholder
-       measurement id, so every visit fetched googletagmanager.com and handed
-       Google a pageview against an id that collects nothing. To switch it on,
-       add a real GA4 tag here; script.js already reports form and call
-       conversions through window.gtag as soon as one exists. -->
+  <!-- Analytics load from script.js, which reads the GA4 and Meta Pixel ids at the
+       top of that file. Both are empty by default and nothing loads until they
+       are filled in. -->
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Lilita+One&family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="icon" type="image/jpeg" href="logo.jpeg" />
   <link rel="apple-touch-icon" href="logo.jpeg" />
-  <!-- ?v= is a cache buster. GitHub Pages serves these with max-age=600, so without
-       it a returning visitor can run up to ten minutes of stale CSS or JS against
-       fresh HTML. Bump the number on both styles.css and script.js whenever either
-       one changes; the new URL forces browsers to fetch rather than reuse. -->
-  <link rel="stylesheet" href="styles.css?v=7" />
+  <!-- ?v= is a cache buster. Bump it on both styles.css and script.js together
+       whenever either file changes. -->
+  <link rel="stylesheet" href="styles.css?v=8" />
+  <link rel="stylesheet" href="hero.css?v=3" />
 </head>
 <body>
 
@@ -82,7 +80,7 @@
         <a href="#faq">FAQ</a>
       </nav>
 
-      <a href="#contact" class="btn btn--primary nav__cta">Apply Now</a>
+      <a href="#contact" class="btn btn--primary nav__cta">Claim Free Session</a>
 
       <button class="nav__toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
         <span></span><span></span><span></span>
@@ -91,56 +89,135 @@
   </header>
 
   <!-- ============ HERO ============ -->
-  <section class="hero" id="home">
-    <div class="hero__stars" aria-hidden="true"></div>
-    <div class="hero__stripes" aria-hidden="true"></div>
-    <div class="hero__glow" aria-hidden="true"></div>
-    <div class="hero__flag usflag" aria-hidden="true"></div>
-
-    <div class="container hero__inner">
-      <div class="hero__content reveal">
-        <span class="eyebrow eyebrow--light">
+  <section class="mhero" id="home">
+    <svg class="mhero__flag" viewBox="0 0 1900 1000" aria-hidden="true" focusable="false"><defs><path id="fstar" d="M0,-1 L0.2245,-0.309 L0.951,-0.309 L0.3633,0.118 L0.5878,0.809 L0,0.382 L-0.5878,0.809 L-0.3633,0.118 L-0.951,-0.309 L-0.2245,-0.309Z" transform="scale(30.80)"/></defs><rect width="1900" height="1000" fill="#fff"/><rect y="0.00" width="1900" height="76.92" fill="#b22234"/><rect y="153.85" width="1900" height="76.92" fill="#b22234"/><rect y="307.69" width="1900" height="76.92" fill="#b22234"/><rect y="461.54" width="1900" height="76.92" fill="#b22234"/><rect y="615.38" width="1900" height="76.92" fill="#b22234"/><rect y="769.23" width="1900" height="76.92" fill="#b22234"/><rect y="923.08" width="1900" height="76.92" fill="#b22234"/><rect width="760" height="538.46" fill="#0a3161"/><g fill="#fff"><use href="#fstar" x="63.3" y="53.8"/><use href="#fstar" x="190.0" y="53.8"/><use href="#fstar" x="316.7" y="53.8"/><use href="#fstar" x="443.3" y="53.8"/><use href="#fstar" x="570.0" y="53.8"/><use href="#fstar" x="696.7" y="53.8"/><use href="#fstar" x="126.7" y="107.7"/><use href="#fstar" x="253.3" y="107.7"/><use href="#fstar" x="380.0" y="107.7"/><use href="#fstar" x="506.7" y="107.7"/><use href="#fstar" x="633.3" y="107.7"/><use href="#fstar" x="63.3" y="161.5"/><use href="#fstar" x="190.0" y="161.5"/><use href="#fstar" x="316.7" y="161.5"/><use href="#fstar" x="443.3" y="161.5"/><use href="#fstar" x="570.0" y="161.5"/><use href="#fstar" x="696.7" y="161.5"/><use href="#fstar" x="126.7" y="215.4"/><use href="#fstar" x="253.3" y="215.4"/><use href="#fstar" x="380.0" y="215.4"/><use href="#fstar" x="506.7" y="215.4"/><use href="#fstar" x="633.3" y="215.4"/><use href="#fstar" x="63.3" y="269.2"/><use href="#fstar" x="190.0" y="269.2"/><use href="#fstar" x="316.7" y="269.2"/><use href="#fstar" x="443.3" y="269.2"/><use href="#fstar" x="570.0" y="269.2"/><use href="#fstar" x="696.7" y="269.2"/><use href="#fstar" x="126.7" y="323.1"/><use href="#fstar" x="253.3" y="323.1"/><use href="#fstar" x="380.0" y="323.1"/><use href="#fstar" x="506.7" y="323.1"/><use href="#fstar" x="633.3" y="323.1"/><use href="#fstar" x="63.3" y="376.9"/><use href="#fstar" x="190.0" y="376.9"/><use href="#fstar" x="316.7" y="376.9"/><use href="#fstar" x="443.3" y="376.9"/><use href="#fstar" x="570.0" y="376.9"/><use href="#fstar" x="696.7" y="376.9"/><use href="#fstar" x="126.7" y="430.8"/><use href="#fstar" x="253.3" y="430.8"/><use href="#fstar" x="380.0" y="430.8"/><use href="#fstar" x="506.7" y="430.8"/><use href="#fstar" x="633.3" y="430.8"/><use href="#fstar" x="63.3" y="484.6"/><use href="#fstar" x="190.0" y="484.6"/><use href="#fstar" x="316.7" y="484.6"/><use href="#fstar" x="443.3" y="484.6"/><use href="#fstar" x="570.0" y="484.6"/><use href="#fstar" x="696.7" y="484.6"/></g></svg>
+    <div class="container mhero__inner">
+      <div class="mhero__content">
+        <span class="eyebrow">
           <span class="eyebrow__dot"></span> Veteran Owned • Results Driven • By the Bond
         </span>
-        <h1 class="hero__title">
-          A Dog You Can <span class="grad-text">Trust</span>.<br />
-          A Bond That <span class="underline-flag">Lasts</span>.
+        <h1 class="mhero__title">
+          A Dog You Can <span class="red-text">Trust</span>.<br />
+          A Bond That Lasts.
         </h1>
-        <p class="hero__sub">
+        <p class="mhero__sub">
           MK9 Training transforms the relationship between you and your dog through
           discipline, structure, and the one thing most programs skip: the <strong>bond</strong>.
           Two focused programs. Zero gimmicks. Real, lasting obedience.
         </p>
 
-        <div class="hero__cta">
+        <div class="mhero__cta">
           <a href="#contact" class="btn btn--primary btn--lg">Claim Your Free Transformation Session</a>
           <a href="#services" class="btn btn--ghost btn--lg">View Our Programs</a>
         </div>
 
-        <ul class="hero__trust">
-          <li><svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M9 16.2l-3.5-3.5L4 14.2 9 19.2 20 8.2l-1.5-1.5z"/></svg> Owner &amp; dog trained <em>together</em></li>
-          <li><svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M9 16.2l-3.5-3.5L4 14.2 9 19.2 20 8.2l-1.5-1.5z"/></svg> Case by case, never cookie cutter</li>
-          <li><svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M9 16.2l-3.5-3.5L4 14.2 9 19.2 20 8.2l-1.5-1.5z"/></svg> First responders honored</li>
+        <ul class="mhero__trust">
+          <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M9 16.2l-3.5-3.5L4 14.2 9 19.2 20 8.2l-1.5-1.5z"/></svg> Owner &amp; dog trained <em>together</em></li>
+          <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M9 16.2l-3.5-3.5L4 14.2 9 19.2 20 8.2l-1.5-1.5z"/></svg> Case by case, never cookie cutter</li>
+          <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M9 16.2l-3.5-3.5L4 14.2 9 19.2 20 8.2l-1.5-1.5z"/></svg> First responders honored</li>
         </ul>
+
+        <p class="mhero__where">Oceanside, CA <span aria-hidden="true">·</span> <a href="tel:+17602715998">(760) 271-5998</a></p>
       </div>
 
-      <div class="hero__media reveal">
-        <div class="hero__photo">
-          <img src="logo.jpeg" alt="MK9 Training, USMC Veteran Owned" class="hero__logo" />
+      <div class="mascot" id="mascot" role="img" aria-label="The MK9 Training badge: a smiling tan dog with a red collar and green leash in front of an American flag, with the Marine Corps emblem, MK9, and USMC Veteran Owned. The dog looks toward your pointer.">
+        <svg class="badge" viewBox="0 0 1000 1000" aria-hidden="true" focusable="false">
+<defs>
+  <path id="bstar" d="M0,-1 L0.2245,-0.309 L0.951,-0.309 L0.3633,0.118 L0.5878,0.809 L0,0.382 L-0.5878,0.809 L-0.3633,0.118 L-0.951,-0.309 L-0.2245,-0.309Z"/>
+  <clipPath id="flagClip"><circle cx="500" cy="470" r="300"/></clipPath>
+  <path id="bottomArc" d="M 100.6 650.4 A 425 425 0 0 0 899.4 650.4"/>
+  <filter id="grain" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7"/>
+    <feColorMatrix values="0 0 0 0 0.1  0 0 0 0 0.08  0 0 0 0 0.05  0 0 0 0.55 0"/>
+    <feComposite in2="SourceGraphic" operator="in"/>
+  </filter>
+  <radialGradient id="ringShade" cx="50%" cy="45%" r="55%"><stop offset="70%" stop-color="#0b3a50"/><stop offset="100%" stop-color="#03283a"/></radialGradient>
+</defs>
+<circle cx="500" cy="505" r="452" fill="url(#ringShade)"/>
+<g clip-path="url(#flagClip)">
+<rect x="200" y="170.00" width="600" height="46.75" fill="#b0563a"/>
+<rect x="200" y="216.15" width="600" height="46.75" fill="#ecdaa9"/>
+<rect x="200" y="262.31" width="600" height="46.75" fill="#b0563a"/>
+<rect x="200" y="308.46" width="600" height="46.75" fill="#ecdaa9"/>
+<rect x="200" y="354.62" width="600" height="46.75" fill="#b0563a"/>
+<rect x="200" y="400.77" width="600" height="46.75" fill="#ecdaa9"/>
+<rect x="200" y="446.92" width="600" height="46.75" fill="#b0563a"/>
+<rect x="200" y="493.08" width="600" height="46.75" fill="#ecdaa9"/>
+<rect x="200" y="539.23" width="600" height="46.75" fill="#b0563a"/>
+<rect x="200" y="585.38" width="600" height="46.75" fill="#ecdaa9"/>
+<rect x="200" y="631.54" width="600" height="46.75" fill="#b0563a"/>
+<rect x="200" y="677.69" width="600" height="46.75" fill="#ecdaa9"/>
+<rect x="200" y="723.85" width="600" height="46.75" fill="#b0563a"/>
+<rect x="200" y="170" width="300" height="323.08" fill="#1d4b6b"/>
+<use href="#bstar" transform="translate(225.0 202.3) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(275.0 202.3) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(325.0 202.3) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(375.0 202.3) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(425.0 202.3) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(475.0 202.3) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(250.0 234.6) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(300.0 234.6) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(350.0 234.6) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(400.0 234.6) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(450.0 234.6) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(225.0 266.9) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(275.0 266.9) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(325.0 266.9) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(375.0 266.9) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(425.0 266.9) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(475.0 266.9) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(250.0 299.2) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(300.0 299.2) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(350.0 299.2) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(400.0 299.2) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(450.0 299.2) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(225.0 331.5) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(275.0 331.5) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(325.0 331.5) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(375.0 331.5) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(425.0 331.5) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(475.0 331.5) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(250.0 363.8) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(300.0 363.8) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(350.0 363.8) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(400.0 363.8) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(450.0 363.8) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(225.0 396.2) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(275.0 396.2) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(325.0 396.2) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(375.0 396.2) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(425.0 396.2) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(475.0 396.2) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(250.0 428.5) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(300.0 428.5) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(350.0 428.5) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(400.0 428.5) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(450.0 428.5) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(225.0 460.8) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(275.0 460.8) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(325.0 460.8) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(375.0 460.8) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(425.0 460.8) scale(9.5)" fill="#f1e6c8"/>
+<use href="#bstar" transform="translate(475.0 460.8) scale(9.5)" fill="#f1e6c8"/>
+</g>
+<circle cx="500" cy="470" r="300" fill="none" stroke="#03283a" stroke-width="6"/>
+<use href="#bstar" transform="translate(152.8 431.2) scale(30)" fill="#f3d87c"/>
+<use href="#bstar" transform="translate(147.6 548.3) scale(30)" fill="#f3d87c"/>
+<use href="#bstar" transform="translate(178.3 655.0) scale(30)" fill="#f3d87c"/>
+<use href="#bstar" transform="translate(847.2 431.2) scale(30)" fill="#f3d87c"/>
+<use href="#bstar" transform="translate(852.4 548.3) scale(30)" fill="#f3d87c"/>
+<use href="#bstar" transform="translate(821.7 655.0) scale(30)" fill="#f3d87c"/>
+<text x="500" y="196" text-anchor="middle" class="badge__mk9">MK9</text>
+<text class="badge__usmc"><textPath href="#bottomArc" startOffset="50%" text-anchor="middle">USMC VETERAN OWNED</textPath></text>
+<image class="badge__ega" href="assets/ega.webp" x="446" y="226" width="230" height="145"/>
+<circle cx="500" cy="505" r="452" filter="url(#grain)" opacity=".35"/>
+</svg>
+        <div class="mascot__dog">
+          <img src="assets/dog-cutout.webp" alt="" width="778" height="779" />
+          <canvas aria-hidden="true"></canvas>
         </div>
-        <div class="hero__card">
-          <span class="usflag usflag--card" aria-hidden="true"></span>
-          <div>
-            <strong>Veteran Owned &amp; Operated</strong>
-            <span>Discipline you can feel in every command.</span>
-          </div>
-        </div>
+        <button type="button" class="mhero__pause" id="mascotPause" aria-pressed="false">Pause motion</button>
       </div>
-    </div>
-
-    <div class="hero__scroll" aria-hidden="true">
-      <span>Scroll</span>
-      <div class="hero__scroll-line"></div>
     </div>
   </section>
 
@@ -528,7 +605,7 @@
         <a href="tel:+17602715998">(760) 271-5998</a>
         <a href="mailto:cali@trainwithmk9.com">cali@trainwithmk9.com</a>
         <a class="ig-handle ig-handle--footer" href="https://instagram.com/mk9_training" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.72 3.72 0 01-1.38-.9 3.72 3.72 0 01-.9-1.38c-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07M12 0C8.74 0 8.33.01 7.05.07c-1.28.06-2.15.26-2.91.56-.79.31-1.46.72-2.13 1.38C1.34 2.68.93 3.35.63 4.14c-.3.76-.5 1.63-.56 2.91C.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.28.26 2.15.56 2.91.31.79.72 1.46 1.38 2.13.67.66 1.34 1.07 2.13 1.38.76.3 1.63.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.28-.06 2.15-.26 2.91-.56a5.9 5.9 0 002.13-1.38 5.9 5.9 0 001.38-2.13c.3-.76.5-1.63.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.28-.26-2.15-.56-2.91a5.9 5.9 0 00-1.38-2.13A5.9 5.9 0 0019.86.63c-.76-.3-1.63-.5-2.91-.56C15.67.01 15.26 0 12 0zm0 5.84A6.16 6.16 0 1018.16 12 6.16 6.16 0 0012 5.84zm0 10.16A4 4 0 1116 12a4 4 0 01-4 4zm6.41-10.4a1.44 1.44 0 11-1.44-1.44 1.44 1.44 0 011.44 1.44z"/></svg> @mk9_training</a>
-        <a href="#contact">Apply Now</a>
+        <a href="#contact">Claim Free Session</a>
       </div>
     </div>
     <div class="footer__bar">
@@ -546,7 +623,7 @@
     <a href="#honor">Who We Serve</a>
     <a href="#process">How It Works</a>
     <a href="#faq">FAQ</a>
-    <a href="#contact" class="btn btn--primary btn--lg">Apply Now</a>
+    <a href="#contact" class="btn btn--primary btn--lg">Claim Free Session</a>
   </div>
 
   <a href="#contact" class="sticky-cta" id="stickyCta">Claim Free Session</a>
@@ -619,7 +696,7 @@
   }
   </script>
 
-  <!-- Bump ?v= together with the stylesheet in <head> when either file changes. -->
-  <script src="script.js?v=7"></script>
+  <script src="script.js?v=8"></script>
+  <script src="hero.js?v=1" defer></script>
 </body>
 </html>
