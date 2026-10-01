@@ -106,3 +106,40 @@
 @media (max-width: 980px) {
   .mhero::after { background: linear-gradient(180deg, rgba(7,16,30,.7) 0%, rgba(7,16,30,.62) 50%, rgba(10,22,38,.2) 72%, rgba(10,22,38,.12) 100%); }
 }
+
+/* ============ CORNER COMPANION ============
+   A small version of the mascot fixed bottom left on every page position.
+   Navy disc with a gold ring like the badge; the head rises above the disc
+   so it reads as a sticker rather than a cropped photo. Never takes input. */
+.k9-corner {
+  --k9: 76px;                                   /* disc diameter */
+  position: fixed; z-index: 80; pointer-events: none;
+  left: calc(18px + env(safe-area-inset-left, 0px));
+  bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+  width: var(--k9); height: calc(var(--k9) * 1.16);
+  opacity: 0; transform: translateY(12px) scale(.92); transform-origin: 50% 100%;
+  transition: opacity .45s ease, transform .45s cubic-bezier(.22, 1, .36, 1), bottom .4s cubic-bezier(.22, 1, .36, 1);
+}
+.k9-corner.is-live { opacity: 1; transform: none; }
+.k9-corner__disc {
+  position: absolute; left: 0; bottom: 0; width: var(--k9); height: var(--k9); border-radius: 50%;
+  background: radial-gradient(circle at 50% 30%, #154a66 0%, #0b3550 55%, #062638 100%);
+  box-shadow: inset 0 0 0 2px rgba(243, 216, 124, .9), inset 0 0 0 5px rgba(6, 38, 56, .9), 0 10px 26px -6px rgba(0, 0, 0, .45);
+}
+.k9-corner__dog {
+  position: absolute; bottom: 0; left: calc(var(--k9) * -0.07);
+  width: calc(var(--k9) * 1.14); height: calc(var(--k9) * 1.14);
+  /* below the disc's middle the dog is cut to the disc; above it the head is free */
+  -webkit-mask-image: radial-gradient(circle calc(var(--k9) / 2 - 2px) at 50% calc(100% - var(--k9) / 2), #000 98%, transparent 100%), linear-gradient(#000, #000);
+  -webkit-mask-size: 100% 100%, 100% 58%; -webkit-mask-repeat: no-repeat; -webkit-mask-position: 0 0, 0 0;
+          mask-image: radial-gradient(circle calc(var(--k9) / 2 - 2px) at 50% calc(100% - var(--k9) / 2), #000 98%, transparent 100%), linear-gradient(#000, #000);
+          mask-size: 100% 100%, 100% 58%; mask-repeat: no-repeat; mask-position: 0 0, 0 0;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, .3));
+}
+@media (max-width: 980px) {
+  .k9-corner { --k9: 52px; left: calc(12px + env(safe-area-inset-left, 0px)); bottom: calc(14px + env(safe-area-inset-bottom, 0px)); }
+  /* step up out of the way when the sticky booking button slides in */
+  .sticky-cta.show ~ .k9-corner { bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
+}
+.k9-corner > img { display: none !important; }        /* texture source only; the site styles would otherwise show it */
+@media print { .k9-corner { display: none; } }

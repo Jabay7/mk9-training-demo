@@ -37,7 +37,7 @@
   <!-- ?v= is a cache buster. Bump it on both styles.css and script.js together
        whenever either file changes. -->
   <link rel="stylesheet" href="styles.css?v=8" />
-  <link rel="stylesheet" href="hero.css?v=4" />
+  <link rel="stylesheet" href="hero.css?v=6" />
 </head>
 <body>
 
@@ -628,6 +628,14 @@
 
   <a href="#contact" class="sticky-cta" id="stickyCta">Claim Free Session</a>
 
+  <!-- Corner companion: the mascot's head, fixed bottom left on every scroll position.
+       Decorative only. It never takes clicks or taps, and stays hidden unless WebGL runs. -->
+  <div class="k9-corner" id="k9Corner" aria-hidden="true">
+    <span class="k9-corner__disc"></span>
+    <canvas class="k9-corner__dog"></canvas>
+    <img src="assets/dog-cutout.webp" alt="" width="778" height="779" decoding="async" hidden />
+  </div>
+
   <!-- ===== Structured data for Google (LocalBusiness) ===== -->
   <script type="application/ld+json">
   {
@@ -697,6 +705,6 @@
   </script>
 
   <script src="script.js?v=8"></script>
-  <script src="hero.js?v=2" defer></script>
+  <script src="hero.js?v=3" defer></script>
 </body>
 </html>

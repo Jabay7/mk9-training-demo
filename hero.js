@@ -1,60 +1,45 @@
-/* MK9 mascot hero.
+/* MK9 mascot.
    The badge is static SVG. The dog is a cut-out of the finished mascot art,
    drawn in WebGL with a hand placed depth map so the head and muzzle shift
    more than the chest, the head tilts a little, the eyes lead the head, and
    fur coloured lids sweep down for blinks. It is a 2.5D treatment of a flat
    illustration, not a rigged 3D model.
-   Keeps the normal cursor, never captures touch, sleeps offscreen and in
-   hidden tabs, and shows a still pose for reduced motion. */
+   Two dogs share this renderer: the big one in the hero badge, and a small
+   head that stays in the bottom left corner of every scroll position.
+   Keeps the normal cursor, never captures touch or clicks, sleeps offscreen
+   and in hidden tabs, and shows a still pose for reduced motion. */
 (function () {
   'use strict';
 
-  var hero = document.getElementById('home');
   var stage = document.getElementById('mascot');
-  var badge = stage.querySelector('.badge');
-  var img = stage.querySelector('.mascot__dog img');
-  var canvas = stage.querySelector('.mascot__dog canvas');
+  var badge = stage && stage.querySelector('.badge');
+  var corner = document.getElementById('k9Corner');
   var pauseBtn = document.getElementById('mascotPause');
   var reduced = matchMedia('(prefers-reduced-motion: reduce)');
   var fine = matchMedia('(hover: hover) and (pointer: fine)');
   var clamp = function (v, a, b) { return Math.max(a, Math.min(b, v)); };
   var now = function () { return performance.now() / 1000; };
-  var PAD = 0.08; // canvas padding around the art, must match .mascot__dog > img inset
+  var PAD = 0.08; // hero canvas padding around the art, must match .mascot__dog > img inset
 
-  /* ---------- attention ---------- */
-  var att = { x: 0, y: 0, inside: false, lastMove: -1e9, nextGlance: 0, idle: null, paused: false };
+  /* ---------- attention, shared by both dogs ----------
+     Raw screen points are kept, and each dog works out its own angle to them. */
+  var att = { inside: false, px: 0, py: 0, lastMove: -1e9, paused: false };
+  var touch = { px: 0, py: 0, at: -1e9 };
+  var scroll = { y: window.scrollY, at: -1e9, vel: 0, sway: 0 };
 
   // soft response: precise near the face, eases out toward the limits
   var soft = function (v) { return v / (1 + Math.abs(v)) * 2; };
 
-  // where a screen point sits relative to the dog's eyes, in -1..1
-  function lookAt(px, py) {
-    var r = stage.getBoundingClientRect();
-    var fx = r.left + r.width * 0.5, fy = r.top + r.height * 0.43;        // the dog's eyes on screen
-    return {
-      x: clamp(soft((px - fx) / (r.width * 0.9)), -1, 1),
-      y: clamp(soft((py - fy) / (r.height * 0.9)), -1, 1)
-    };
-  }
-
-  function onMove(e) {
+  document.addEventListener('pointermove', function (e) {
     if (e.pointerType === 'touch') return;
-    var l = lookAt(e.clientX, e.clientY);
-    att.x = l.x; att.y = l.y;
-    att.inside = true; att.lastMove = now();
-  }
-  // listen on the whole page so the dog keeps watching while the cursor is over the nav or text
-  document.addEventListener('pointermove', onMove, { passive: true });
+    att.px = e.clientX; att.py = e.clientY; att.inside = true; att.lastMove = now();
+  }, { passive: true });
   document.documentElement.addEventListener('pointerleave', function () { att.inside = false; att.lastMove = now(); });
 
-  /* ---------- phones: follow the scroll, and glance at a finger ----------
-     Passive listeners only, so scrolling is never delayed or blocked. */
-  var touch = { x: 0, y: 0, at: -1e9 };
-  var scroll = { y: window.scrollY, at: -1e9, vel: 0, sway: 0 };
+  // phones: follow the scroll and glance at a finger. Passive only, so scrolling is never delayed.
   function onTouch(e) {
     var p = e.touches && e.touches[0]; if (!p) return;
-    var l = lookAt(p.clientX, p.clientY);
-    touch.x = l.x; touch.y = l.y; touch.at = now();
+    touch.px = p.clientX; touch.py = p.clientY; touch.at = now();
   }
   document.addEventListener('touchstart', onTouch, { passive: true });
   document.addEventListener('touchmove', onTouch, { passive: true });
@@ -65,66 +50,73 @@
     scroll.y = y; scroll.at = t;
   }, { passive: true });
 
-  function touchTarget(t) {
-    if (t - touch.at < 1.6) return { x: touch.x, y: touch.y };              // looking at the finger
-    if (t - scroll.at < 2.2) {
-      // keep his eyes on the middle of the screen as the badge moves, plus a nod in the scroll direction
-      var l = lookAt(window.innerWidth / 2, window.innerHeight * 0.45);
-      var fresh = Math.max(0, 1 - (t - scroll.at) / 0.4);
-      return {
-        x: clamp(Math.sin(scroll.sway) * 0.55, -1, 1),
-        y: clamp(l.y + clamp(scroll.vel * 0.0006, -0.5, 0.5) * fresh, -1, 1)
-      };
-    }
-    return null;
-  }
-
-  function target(t) {
-    if (reduced.matches || att.paused) return { x: 0, y: 0 };
-    if (!fine.matches) {
-      var tt = touchTarget(t);
-      if (tt) { att.nextGlance = t + 1.2; return tt; }
-    }
-    var since = t - att.lastMove;
-    if (att.inside && since < 2.2) return { x: att.x, y: att.y };           // tracking, then holding
-    if (!att.inside && since < 3) return { x: 0, y: 0 };                    // cursor left: settle
-    if (t > att.nextGlance) {                                               // idle look around
-      var spots = [[-0.7, 0.1], [0.65, -0.2], [0.2, 0.45], [-0.35, -0.3], [0, 0], [0.8, 0.15], [0, 0]];
-      var s = spots[Math.floor(Math.random() * spots.length)];
-      att.idle = { x: s[0], y: s[1] };
-      att.nextGlance = t + 1.6 + Math.random() * 2.4;
-    }
-    return att.idle || { x: 0, y: 0 };
-  }
-
   function spring(k, d) {
     return { x: 0, v: 0, step: function (g, dt) { this.v += (g - this.x) * k * dt; this.v *= Math.exp(-d * dt); this.x += this.v * dt; return this.x; } };
   }
 
-  /* ---------- blinking ---------- */
-  var blink = { start: -1, next: 1.5, double: false };
-  function blinkAmount(t, headSpeed) {
-    if (reduced.matches || att.paused) return 0;
-    if (blink.start < 0 && (t > blink.next || headSpeed > 2.6 && t - blink.lastEnd > 1.2)) { blink.start = t; }
-    if (blink.start < 0) return 0;
-    var p = (t - blink.start) / 0.2;                       // 80ms close, 120ms open
-    if (p >= 1) {
-      blink.start = -1; blink.lastEnd = t;
-      if (!blink.double && Math.random() < 0.25) { blink.double = true; blink.next = t + 0.12; }
-      else { blink.double = false; blink.next = t + 2.4 + Math.random() * 3.6; }
-      return 0;
-    }
-    return p < 0.4 ? p / 0.4 : 1 - (p - 0.4) / 0.6;
+  /* where a screen point sits relative to one dog's eyes, in -1..1 */
+  function makeLook(el, faceX, faceY, reach) {
+    return function (px, py) {
+      var r = el.getBoundingClientRect();
+      var fx = r.left + r.width * faceX, fy = r.top + r.height * faceY;
+      var s = Math.max(r.width, r.height) * 0.9, rx = Math.max(s, reach), ry = Math.max(s, reach * 0.8);
+      return { x: clamp(soft((px - fx) / rx), -1, 1), y: clamp(soft((py - fy) / ry), -1, 1) };
+    };
   }
-  blink.lastEnd = 0;
 
-  /* ---------- run loop ---------- */
-  function loop(tick) {
+  /* each dog's gaze: cursor on desktop, scroll and finger on phones, then idle look around */
+  function makeTarget(look) {
+    var st = { nextGlance: 0, idle: null };
+    return function (t) {
+      if (reduced.matches || att.paused) return { x: 0, y: 0 };
+      if (!fine.matches) {
+        if (t - touch.at < 1.6) { st.nextGlance = t + 1.2; return look(touch.px, touch.py); }
+        if (t - scroll.at < 2.2) {
+          // eyes on the middle of the screen as the page moves, plus a nod in the scroll direction
+          var l = look(window.innerWidth / 2, window.innerHeight * 0.45);
+          var fresh = Math.max(0, 1 - (t - scroll.at) / 0.4);
+          st.nextGlance = t + 1.2;
+          return { x: clamp(l.x * 0.5 + Math.sin(scroll.sway) * 0.5, -1, 1), y: clamp(l.y + clamp(scroll.vel * 0.0006, -0.5, 0.5) * fresh, -1, 1) };
+        }
+      }
+      var since = t - att.lastMove;
+      if (att.inside && since < 2.2) return look(att.px, att.py);           // tracking, then holding
+      if (!att.inside && since < 3) return { x: 0, y: 0 };                  // cursor left the page: settle
+      if (t > st.nextGlance) {                                              // idle look around
+        var spots = [[-0.7, 0.1], [0.65, -0.2], [0.2, 0.45], [-0.35, -0.3], [0, 0], [0.8, 0.15], [0, 0]];
+        var s = spots[Math.floor(Math.random() * spots.length)];
+        st.idle = { x: s[0], y: s[1] };
+        st.nextGlance = t + 1.6 + Math.random() * 2.4;
+      }
+      return st.idle || { x: 0, y: 0 };
+    };
+  }
+
+  /* blinking, one schedule per dog so they never blink in unison */
+  function makeBlink() {
+    var b = { start: -1, next: 1 + Math.random() * 2, double: false, lastEnd: 0 };
+    return function (t, headSpeed) {
+      if (reduced.matches || att.paused) return 0;
+      if (b.start < 0 && (t > b.next || headSpeed > 2.6 && t - b.lastEnd > 1.2)) b.start = t;
+      if (b.start < 0) return 0;
+      var p = (t - b.start) / 0.2;                       // 80ms close, 120ms open
+      if (p >= 1) {
+        b.start = -1; b.lastEnd = t;
+        if (!b.double && Math.random() < 0.25) { b.double = true; b.next = t + 0.12; }
+        else { b.double = false; b.next = t + 2.4 + Math.random() * 3.6; }
+        return 0;
+      }
+      return p < 0.4 ? p / 0.4 : 1 - (p - 0.4) / 0.6;
+    };
+  }
+
+  /* run loop that sleeps when its element is offscreen or the tab is hidden */
+  function loop(el, tick) {
     var raf = 0, onscreen = true, last = now();
     function run() { var t = now(), dt = Math.min(t - last, 0.05); last = t; tick(dt, t); raf = requestAnimationFrame(run); }
     function sync() { cancelAnimationFrame(raf); raf = 0; if (onscreen && !document.hidden) { last = now(); raf = requestAnimationFrame(run); } }
     var io = new IntersectionObserver(function (en) { onscreen = en[en.length - 1].isIntersecting; sync(); });
-    io.observe(stage);
+    io.observe(el);
     document.addEventListener('visibilitychange', sync);
     sync();
     return { stop: function () { cancelAnimationFrame(raf); io.disconnect(); document.removeEventListener('visibilitychange', sync); } };
@@ -134,7 +126,8 @@
   var VERT = 'attribute vec2 a; varying vec2 v_uv; void main(){ v_uv = vec2(a.x * 0.5 + 0.5, 0.5 - a.y * 0.5); gl_Position = vec4(a, 0.0, 1.0); }';
   var FRAG = [
     'precision highp float;',
-    'uniform sampler2D u_img; uniform vec2 u_head; uniform vec2 u_eye; uniform float u_blink; uniform float u_breath; uniform float u_pad;',
+    'uniform sampler2D u_img; uniform vec2 u_head; uniform vec2 u_eye; uniform float u_blink; uniform float u_breath;',
+    'uniform vec4 u_view;',                                                   // which part of the art fills the canvas
     'varying vec2 v_uv;',
     'float dome(vec2 p, vec2 c, vec2 r){ float d = length((p - c) / r); return 1.0 - smoothstep(0.0, 1.0, d * d); }',
     // coordinates are in the cut-out art (0..1), measured from the illustration
@@ -152,7 +145,7 @@
     'vec4 eyeLid(vec2 p, vec4 col, vec2 c, vec2 r){',
     '  vec2 q = (p - c) / r;',
     '  float inside = 1.0 - smoothstep(0.85, 1.12, length(q));',
-    // the eye itself shifts toward the cursor ahead of the head
+    // the eye itself shifts toward the target ahead of the head
     '  float irisW = 1.0 - smoothstep(0.45, 0.95, length(q));',
     '  col = mix(col, tex(p - u_eye * r * 0.22), irisW);',
     // lid: fur from just above the brow slides down over the eye
@@ -166,7 +159,7 @@
     '  return col;',
     '}',
     'void main(){',
-    '  vec2 p = (v_uv - u_pad) / (1.0 - 2.0 * u_pad);',
+    '  vec2 p = u_view.xy + v_uv * u_view.zw;',
     // breathing: chest swells a touch
     '  p.y += u_breath * 0.004 * dome(p, vec2(0.48, 0.9), vec2(0.5, 0.3));',
     // tilt the head around the neck toward the look direction
@@ -186,7 +179,10 @@
     '}'
   ].join('\n');
 
-  function start() {
+  /* one animated dog on one canvas.
+     o.view: [x, y, w, h] of the art shown, o.look: gaze mapper, o.watch: element for the run loop,
+     o.onFrame(x, y): optional hook (the hero badge drifts against the head) */
+  function createDog(canvas, img, o) {
     var gl = canvas.getContext('webgl', { alpha: true, premultipliedAlpha: true, antialias: false });
     if (!gl) throw new Error('WebGL unavailable');
     function sh(type, src) { var s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s)); return s; }
@@ -203,17 +199,11 @@
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-    var U = {}; ['u_head', 'u_eye', 'u_blink', 'u_breath', 'u_pad'].forEach(function (n) { U[n] = gl.getUniformLocation(prog, n); });
-    gl.uniform1f(U.u_pad, PAD);
+    var U = {}; ['u_head', 'u_eye', 'u_blink', 'u_breath', 'u_view'].forEach(function (n) { U[n] = gl.getUniformLocation(prog, n); });
+    gl.uniform4f(U.u_view, o.view[0], o.view[1], o.view[2], o.view[3]);
     gl.clearColor(0, 0, 0, 0);
 
-    function size() {
-      var dpr = Math.min(window.devicePixelRatio || 1, 1.75);
-      canvas.width = Math.round(canvas.clientWidth * dpr); canvas.height = Math.round(canvas.clientHeight * dpr);
-      gl.viewport(0, 0, canvas.width, canvas.height);
-    }
-    var ro = new ResizeObserver(size); ro.observe(canvas); size();
-
+    var target = makeTarget(o.look), blink = makeBlink();
     var hx = spring(38, 7.5), hy = spring(38, 7.5);   // head: weighty, slight overshoot
     var ex = spring(160, 16), ey = spring(160, 16);   // eyes: quick, they lead the head
     var prevHx = 0;
@@ -223,37 +213,74 @@
       var speed = Math.abs(x - prevHx) / Math.max(dt, 1e-4); prevHx = x;
       gl.uniform2f(U.u_head, x, y);
       gl.uniform2f(U.u_eye, ex.step(g.x, dt) - x * 0.6, ey.step(g.y, dt) - y * 0.6);
-      gl.uniform1f(U.u_blink, blinkAmount(t, speed));
+      gl.uniform1f(U.u_blink, blink(t, speed));
       gl.uniform1f(U.u_breath, reduced.matches ? 0 : Math.sin(t * 1.7));
-      badge.style.transform = 'translate(' + (-x * 4).toFixed(2) + 'px,' + (-y * 3).toFixed(2) + 'px)';
+      if (o.onFrame) o.onFrame(x, y);
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     }
+    function size() {
+      var dpr = Math.min(window.devicePixelRatio || 1, o.maxDpr || 1.75);
+      canvas.width = Math.max(1, Math.round(canvas.clientWidth * dpr)); canvas.height = Math.max(1, Math.round(canvas.clientHeight * dpr));
+      gl.viewport(0, 0, canvas.width, canvas.height);
+    }
     // draw right away (and after every resize) so the dog shows even before the loop runs
-    var redraw = function () { frame(0, now()); };
-
-    ro.disconnect(); ro = new ResizeObserver(function () { size(); redraw(); }); ro.observe(canvas);
-    size(); redraw();
-    var l = loop(frame);
-    stage.classList.add('is-live');
-    return { stop: function () { l.stop(); ro.disconnect(); gl.deleteTexture(tex); gl.deleteBuffer(buf); gl.deleteProgram(prog); stage.classList.remove('is-live'); badge.style.transform = ''; } };
+    var ro = new ResizeObserver(function () { size(); frame(0, now()); }); ro.observe(canvas);
+    size(); frame(0, now());
+    var l = loop(o.watch, frame);
+    return { stop: function () { l.stop(); ro.disconnect(); gl.deleteTexture(tex); gl.deleteBuffer(buf); gl.deleteProgram(prog); } };
   }
 
-  var active = null;
-  function boot() {
-    try { active = start(); }
-    catch (err) { console.warn('[mk9 mascot] showing still artwork:', err); } // the <img> stays visible
+  /* ---------- the two dogs ---------- */
+  var dogs = {};
+  var span = 1 / (1 - 2 * PAD);
+  var setups = {
+    hero: stage && function () {
+      var d = createDog(stage.querySelector('.mascot__dog canvas'), stage.querySelector('.mascot__dog img'), {
+        view: [-PAD * span, -PAD * span, span, span],
+        look: makeLook(stage, 0.5, 0.43, 0),
+        watch: stage,
+        onFrame: function (x, y) { badge.style.transform = 'translate(' + (-x * 4).toFixed(2) + 'px,' + (-y * 3).toFixed(2) + 'px)'; }
+      });
+      stage.classList.add('is-live');
+      return { stop: function () { d.stop(); stage.classList.remove('is-live'); badge.style.transform = ''; } };
+    },
+    corner: corner && function () {
+      var cv = corner.querySelector('canvas');
+      // head and collar only; the art's top edge sits just above the ear tips
+      var d = createDog(cv, corner.querySelector('img'), {
+        view: [0.0, -0.06, 0.9, 0.9],
+        look: makeLook(cv, 0.5, 0.3, 520),
+        watch: corner,
+        maxDpr: 2
+      });
+      corner.classList.add('is-live');
+      return { stop: function () { d.stop(); corner.classList.remove('is-live'); } };
+    }
+  };
+
+  function boot(name) {
+    if (!setups[name] || dogs[name]) return;
+    var host = name === 'hero' ? stage.querySelector('.mascot__dog img') : corner.querySelector('img');
+    var go = function () {
+      try { dogs[name] = setups[name](); }
+      catch (err) { console.warn('[mk9 mascot] ' + name + ' showing still artwork:', err); } // hero keeps its <img>; corner stays hidden
+    };
+    if (host.complete && host.naturalWidth) go(); else host.addEventListener('load', go, { once: true });
   }
-  if (img.complete && img.naturalWidth) boot(); else img.addEventListener('load', boot, { once: true });
+  function bootAll() { boot('hero'); boot('corner'); }
+  function stopAll() { Object.keys(dogs).forEach(function (k) { dogs[k].stop(); delete dogs[k]; }); }
+  bootAll();
 
   function syncPause() {
+    if (!pauseBtn) return;
     pauseBtn.hidden = reduced.matches;
     pauseBtn.textContent = att.paused ? 'Resume motion' : 'Pause motion';
     pauseBtn.setAttribute('aria-pressed', String(att.paused));
   }
-  pauseBtn.addEventListener('click', function () { att.paused = !att.paused; syncPause(); });
+  if (pauseBtn) pauseBtn.addEventListener('click', function () { att.paused = !att.paused; syncPause(); });
   reduced.addEventListener('change', syncPause);
   syncPause();
-  window.addEventListener('pagehide', function (e) { if (!e.persisted && active) { active.stop(); active = null; } });
-  window.addEventListener('pageshow', function (e) { if (e.persisted && !active) boot(); });
+  window.addEventListener('pagehide', function (e) { if (!e.persisted) stopAll(); });
+  window.addEventListener('pageshow', function (e) { if (e.persisted) bootAll(); });
 })();
