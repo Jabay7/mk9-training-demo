@@ -27,22 +27,64 @@
   // soft response: precise near the face, eases out toward the limits
   var soft = function (v) { return v / (1 + Math.abs(v)) * 2; };
 
-  function onMove(e) {
-    if (e.pointerType === 'touch') return;
+  // where a screen point sits relative to the dog's eyes, in -1..1
+  function lookAt(px, py) {
     var r = stage.getBoundingClientRect();
     var fx = r.left + r.width * 0.5, fy = r.top + r.height * 0.43;        // the dog's eyes on screen
-    var dx = (e.clientX - fx) / (r.width * 0.9), dy = (e.clientY - fy) / (r.height * 0.9);
-    att.x = clamp(soft(dx), -1, 1);
-    att.y = clamp(soft(dy), -1, 1);
+    return {
+      x: clamp(soft((px - fx) / (r.width * 0.9)), -1, 1),
+      y: clamp(soft((py - fy) / (r.height * 0.9)), -1, 1)
+    };
+  }
+
+  function onMove(e) {
+    if (e.pointerType === 'touch') return;
+    var l = lookAt(e.clientX, e.clientY);
+    att.x = l.x; att.y = l.y;
     att.inside = true; att.lastMove = now();
   }
   // listen on the whole page so the dog keeps watching while the cursor is over the nav or text
   document.addEventListener('pointermove', onMove, { passive: true });
   document.documentElement.addEventListener('pointerleave', function () { att.inside = false; att.lastMove = now(); });
 
+  /* ---------- phones: follow the scroll, and glance at a finger ----------
+     Passive listeners only, so scrolling is never delayed or blocked. */
+  var touch = { x: 0, y: 0, at: -1e9 };
+  var scroll = { y: window.scrollY, at: -1e9, vel: 0, sway: 0 };
+  function onTouch(e) {
+    var p = e.touches && e.touches[0]; if (!p) return;
+    var l = lookAt(p.clientX, p.clientY);
+    touch.x = l.x; touch.y = l.y; touch.at = now();
+  }
+  document.addEventListener('touchstart', onTouch, { passive: true });
+  document.addEventListener('touchmove', onTouch, { passive: true });
+  window.addEventListener('scroll', function () {
+    var t = now(), y = window.scrollY, dt = Math.max(t - scroll.at, 0.016);
+    if (t - scroll.at < 0.3) scroll.vel = scroll.vel * 0.6 + ((y - scroll.y) / dt) * 0.4; else scroll.vel = 0;
+    scroll.sway += (y - scroll.y) * 0.0035;                                 // head sweeps side to side as the page moves
+    scroll.y = y; scroll.at = t;
+  }, { passive: true });
+
+  function touchTarget(t) {
+    if (t - touch.at < 1.6) return { x: touch.x, y: touch.y };              // looking at the finger
+    if (t - scroll.at < 2.2) {
+      // keep his eyes on the middle of the screen as the badge moves, plus a nod in the scroll direction
+      var l = lookAt(window.innerWidth / 2, window.innerHeight * 0.45);
+      var fresh = Math.max(0, 1 - (t - scroll.at) / 0.4);
+      return {
+        x: clamp(Math.sin(scroll.sway) * 0.55, -1, 1),
+        y: clamp(l.y + clamp(scroll.vel * 0.0006, -0.5, 0.5) * fresh, -1, 1)
+      };
+    }
+    return null;
+  }
+
   function target(t) {
     if (reduced.matches || att.paused) return { x: 0, y: 0 };
-    if (!fine.matches) return { x: Math.sin(t * 0.4) * 0.4, y: Math.sin(t * 0.27) * 0.18 }; // touch: gentle idle
+    if (!fine.matches) {
+      var tt = touchTarget(t);
+      if (tt) { att.nextGlance = t + 1.2; return tt; }
+    }
     var since = t - att.lastMove;
     if (att.inside && since < 2.2) return { x: att.x, y: att.y };           // tracking, then holding
     if (!att.inside && since < 3) return { x: 0, y: 0 };                    // cursor left: settle

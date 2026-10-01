@@ -87,8 +87,11 @@
           mask-composite: intersect;
 }
 @media (max-width: 980px) {
-  .mhero__flag { width: 150%; right: -25%; top: 0; transform: none;
-    -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent 100%); mask-image: linear-gradient(180deg, #000 55%, transparent 100%); }
+  /* same idea as desktop, turned on its side: the whole flag sits behind the badge
+     and fades up into the navy where the copy is */
+  .mhero__flag { width: min(190%, 1000px); left: -8%; right: auto; top: auto; bottom: 0; transform: none;
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 32%, #000 94%, transparent 100%);
+            mask-image: linear-gradient(180deg, transparent 0%, #000 32%, #000 94%, transparent 100%); }
 }
 .mhero::before { z-index: 1; }
 /* dusty blue wash from the logo: strong behind the copy, lighter behind the badge */
@@ -101,5 +104,5 @@
 }
 .mhero__inner { z-index: 2; }
 @media (max-width: 980px) {
-  .mhero::after { background: linear-gradient(180deg, rgba(7,16,30,.62) 0%, rgba(7,16,30,.7) 45%, rgba(7,16,30,.78) 100%); }
+  .mhero::after { background: linear-gradient(180deg, rgba(7,16,30,.7) 0%, rgba(7,16,30,.62) 50%, rgba(10,22,38,.2) 72%, rgba(10,22,38,.12) 100%); }
 }
