@@ -64,7 +64,7 @@
 @media (max-width: 980px) {
   .mhero__inner { grid-template-columns: minmax(0, 1fr); }
   .mhero__inner > * { min-width: 0; }
-  .mascot { justify-self: center; max-width: 460px; }
+  .mascot { justify-self: center; max-width: 460px; order: -1; }   /* phones: Cali first, the headline below her */
 }
 
 /* ---- still American flag filling the hero background ---- */
@@ -81,10 +81,10 @@
 }
 @media (max-width: 980px) {
   /* same idea as desktop, turned on its side: the whole flag sits behind the badge
-     and fades up into the navy where the copy is */
-  .mhero__flag { width: min(190%, 1000px); left: -8%; right: auto; top: auto; bottom: 0; transform: none;
-    -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 32%, #000 94%, transparent 100%);
-            mask-image: linear-gradient(180deg, transparent 0%, #000 32%, #000 94%, transparent 100%); }
+     at the top and fades down into the navy where the copy is */
+  .mhero__flag { width: min(190%, 1000px); left: -8%; right: auto; top: 0; bottom: auto; transform: none;
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 6%, #000 68%, transparent 100%);
+            mask-image: linear-gradient(180deg, transparent 0%, #000 6%, #000 68%, transparent 100%); }
 }
 .mhero::before { z-index: 1; }
 /* dusty blue wash from the logo: strong behind the copy, lighter behind the badge */
@@ -97,7 +97,7 @@
 }
 .mhero__inner { z-index: 2; }
 @media (max-width: 980px) {
-  .mhero::after { background: linear-gradient(180deg, rgba(7,16,30,.7) 0%, rgba(7,16,30,.62) 50%, rgba(10,22,38,.2) 72%, rgba(10,22,38,.12) 100%); }
+  .mhero::after { background: linear-gradient(180deg, rgba(10,22,38,.12) 0%, rgba(10,22,38,.2) 28%, rgba(7,16,30,.62) 50%, rgba(7,16,30,.7) 100%); }
 }
 
 /* ============ CORNER COMPANION ============
@@ -155,3 +155,22 @@
 .k9-corner__woof.is-on { opacity: 1; transform: none; }
 @media (max-width: 980px) { .k9-corner__woof { font-size: 13px; } }
 @media (prefers-reduced-motion: reduce) { .k9-corner__woof { transition: none; } }
+
+/* "Hello, I'm Cali!" speech bubble beside the hero dog's head, tail pointing at her */
+.mascot__hello {
+  position: absolute; z-index: 3; left: 1%; top: 27%; pointer-events: none;
+  padding: .4em .85em .32em; border-radius: 16px 16px 4px 16px;
+  background: #fff; color: #0a1626; border: 3px solid #f3d87c;
+  font-family: 'Lilita One', 'Anton', sans-serif; font-size: clamp(17px, 1.7vw, 24px); line-height: 1; letter-spacing: .03em; white-space: nowrap;
+  text-shadow: none; box-shadow: 0 12px 26px -8px rgba(0, 0, 0, .5);
+  transform-origin: 100% 100%;
+  animation: mascot-hello .5s cubic-bezier(.3, 1.6, .5, 1) .9s both;
+}
+.mascot__hello::after {                         /* tail, pointing down right at her head */
+  content: ""; position: absolute; right: -3px; bottom: -11px; width: 16px; height: 13px;
+  background: #fff; border-right: 3px solid #f3d87c; border-bottom: 3px solid #f3d87c;
+  clip-path: polygon(0 0, 100% 0, 100% 100%); border-bottom-right-radius: 3px;
+}
+@keyframes mascot-hello { from { opacity: 0; transform: translateY(8px) scale(.4); } to { opacity: 1; transform: none; } }
+@media (max-width: 980px) { .mascot__hello { left: 0; top: 24%; font-size: clamp(15px, 4vw, 19px); } }
+@media (prefers-reduced-motion: reduce) { .mascot__hello { animation: none; } }
