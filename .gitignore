@@ -30,3 +30,12 @@ npm-debug.log*
 node_modules/
 tmp/
 .cache/
+
+# ── Local working files (never commit) ──
+marketing/
+*-original.jpeg
+*-original.jpg
+*-original.png
+
+# Python caches from the site tests
+__pycache__/
