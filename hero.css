@@ -160,7 +160,7 @@
 
 /* "Hello, I'm Cali!" speech bubble right above the dog's right ear, tail pointing down at it, clear of the Eagle, Globe and Anchor */
 .mascot__hello {
-  position: absolute; z-index: 3; left: 67%; bottom: 70.5%; pointer-events: none;
+  position: absolute; z-index: 3; left: 69%; bottom: 66%; pointer-events: none;
   padding: .4em .85em .32em; border-radius: 16px 16px 16px 4px;
   background: #fff; color: #0a1626; border: 3px solid #f3d87c;
   font-family: 'Lilita One', 'Anton', sans-serif; font-size: clamp(17px, 1.7vw, 24px); line-height: 1; letter-spacing: .03em; white-space: nowrap;
@@ -174,5 +174,5 @@
   clip-path: polygon(0 0, 100% 0, 0 100%); border-bottom-left-radius: 3px;
 }
 @keyframes mascot-hello { from { opacity: 0; transform: translateY(8px) scale(.4); } to { opacity: 1; transform: none; } }
-@media (max-width: 980px) { .mascot__hello { left: 67%; bottom: 70.5%; padding: .38em .7em .3em; font-size: clamp(11px, 3.1vw, 16px); } }
+@media (max-width: 980px) { .mascot__hello { left: 69%; bottom: 66%; padding: .38em .7em .3em; font-size: clamp(11px, 3.1vw, 16px); } }
 @media (prefers-reduced-motion: reduce) { .mascot__hello { animation: none; } }
