@@ -662,6 +662,6 @@ ul { list-style: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  * { animation: none !important; scroll-behavior: auto; }
+  html, * { animation: none !important; scroll-behavior: auto; }
   .reveal { opacity: 1; transform: none; }
 }

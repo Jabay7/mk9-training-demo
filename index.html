@@ -36,8 +36,8 @@
   <link rel="apple-touch-icon" href="logo.jpeg" />
   <!-- ?v= is a cache buster. Bump it on both styles.css and script.js together
        whenever either file changes. -->
-  <link rel="stylesheet" href="styles.css?v=8" />
-  <link rel="stylesheet" href="hero.css?v=15" />
+  <link rel="stylesheet" href="styles.css?v=9" />
+  <link rel="stylesheet" href="hero.css?v=17" />
 </head>
 <body>
 
@@ -125,6 +125,8 @@
 <defs>
   <path id="bstar" d="M0,-1 L0.2245,-0.309 L0.951,-0.309 L0.3633,0.118 L0.5878,0.809 L0,0.382 L-0.5878,0.809 L-0.3633,0.118 L-0.951,-0.309 L-0.2245,-0.309Z"/>
   <clipPath id="flagClip"><circle cx="500" cy="470" r="300"/></clipPath>
+  <!-- hides the emblem's globe, which sits behind the dog's head and would otherwise peek over it; keeps the eagle and anchor -->
+  <mask id="egaMask" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="1000"><rect width="1000" height="1000" fill="#fff"/><path d="M440 322H606V352H690V390H440Z" fill="#000"/></mask>
   <path id="bottomArc" d="M 100.6 650.4 A 425 425 0 0 0 899.4 650.4"/>
   <filter id="grain" x="0" y="0" width="100%" height="100%">
     <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7"/>
@@ -209,7 +211,7 @@
 <use href="#bstar" transform="translate(821.7 655.0) scale(30)" fill="#f3d87c"/>
 <text x="500" y="196" text-anchor="middle" class="badge__mk9">MK9</text>
 <text class="badge__usmc"><textPath href="#bottomArc" startOffset="50%" text-anchor="middle">USMC VETERAN OWNED</textPath></text>
-<image class="badge__ega" href="assets/ega.webp" x="446" y="226" width="230" height="145"/>
+<image class="badge__ega" href="assets/ega.webp" x="446" y="226" width="230" height="145" mask="url(#egaMask)"/>
 <circle cx="500" cy="505" r="452" filter="url(#grain)" opacity=".35"/>
 </svg>
         <span class="mascot__hello" aria-hidden="true">Hello, I&rsquo;m Cali!</span>
@@ -705,7 +707,7 @@
   }
   </script>
 
-  <script src="script.js?v=8"></script>
-  <script src="hero.js?v=6" defer></script>
+  <script src="script.js?v=9"></script>
+  <script src="hero.js?v=7" defer></script>
 </body>
 </html>

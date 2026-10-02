@@ -232,7 +232,7 @@
   }
 
   /* ---------- the corner dog's "Woof!" ----------
-     Waits for the visitor's first scroll, then pops in now and then; stays put for reduced motion or pause. */
+     Waits until the visitor scrolls past the big badge, then pops in now and then; stays put for reduced motion or pause. */
   var woof = { el: corner && corner.querySelector('.k9-corner__woof'), timer: 0, until: 0 };
   function showWoof(ms) {
     if (!woof.el) return;
@@ -245,17 +245,21 @@
       woof.timer = setTimeout(function () { showWoof(3000); }, 14000 + Math.random() * 10000);
     }, ms);
   }
-  function onFirstScroll() {
-    window.removeEventListener('scroll', onFirstScroll);
+  function onPastBadge() {
+    if (woof.started || !stage || stage.getBoundingClientRect().bottom > 0) return;   // badge still on screen
+    woof.started = true;
+    window.removeEventListener('scroll', onPastBadge);
     if (reduced.matches) { woof.el.classList.add('is-on'); return; }
     woof.timer = setTimeout(function () { showWoof(3800); }, 350);
   }
   function startWoof() {
-    if (!woof.el) return;
-    window.addEventListener('scroll', onFirstScroll, { passive: true });
+    if (!woof.el || woof.started) return;
+    window.addEventListener('scroll', onPastBadge, { passive: true });
+    onPastBadge();                                                          // page may open already scrolled down
   }
   function stopWoof() {
-    window.removeEventListener('scroll', onFirstScroll);
+    window.removeEventListener('scroll', onPastBadge);
+    woof.started = false;
     clearTimeout(woof.timer); if (woof.el) woof.el.classList.remove('is-on');
   }
 
