@@ -54,7 +54,7 @@
 .badge__usmc { font-family: 'Lilita One', 'Anton', sans-serif; font-size: 74px; letter-spacing: 3px; fill: var(--mh-gold); }
 
 /* the dog layer: its box is padded 8% on every side so head movement never clips */
-.mascot__dog { position: absolute; left: 22.74%; top: 26.9%;  width: 59.5%; height: 59.5%; pointer-events: none; }
+.mascot__dog { position: absolute; left: 22.74%; top: 26.3%;  width: 59.5%; height: 59.5%; pointer-events: none; }
 .mascot__dog > img { position: absolute; inset: 8%; width: 84%; height: 84%; transition: opacity .15s linear; }
 .mascot__dog > canvas { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity .25s ease .1s; }
 .mascot.is-live .mascot__dog > canvas { opacity: 1; }
@@ -160,7 +160,7 @@
 
 /* "Hello, I'm Cali!" speech bubble just above the dog's right ear, never over it: right of the Eagle, Globe and Anchor and well above the first star on the right */
 .mascot__hello {
-  position: absolute; z-index: 3; left: 70%; bottom: 70.4%; pointer-events: none;
+  position: absolute; z-index: 3; left: 70%; bottom: 71%; pointer-events: none;
   padding: .4em .85em .32em; border-radius: 16px 16px 16px 4px;
   background: #fff; color: #0a1626; border: 3px solid #f3d87c;
   font-family: 'Lilita One', 'Anton', sans-serif; font-size: clamp(17px, 1.7vw, 24px); line-height: 1; letter-spacing: .03em; white-space: nowrap;
@@ -174,5 +174,5 @@
   clip-path: polygon(0 0, 100% 0, 0 100%); border-bottom-left-radius: 3px;
 }
 @keyframes mascot-hello { from { opacity: 0; transform: translateY(8px) scale(.4); } to { opacity: 1; transform: none; } }
-@media (max-width: 980px) { .mascot__hello { left: 70%; bottom: 70.4%; font-size: clamp(13px, 3.4vw, 17px); } }
+@media (max-width: 980px) { .mascot__hello { left: 70%; bottom: 71%; font-size: clamp(13px, 3.4vw, 17px); } }
 @media (prefers-reduced-motion: reduce) { .mascot__hello { animation: none; } }
