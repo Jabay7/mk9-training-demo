@@ -232,7 +232,7 @@
   }
 
   /* ---------- the corner dog's "Woof!" ----------
-     Pops in after load, then now and then; stays put for reduced motion or pause. */
+     Waits for the visitor's first scroll, then pops in now and then; stays put for reduced motion or pause. */
   var woof = { el: corner && corner.querySelector('.k9-corner__woof'), timer: 0, until: 0 };
   function showWoof(ms) {
     if (!woof.el) return;
@@ -245,12 +245,19 @@
       woof.timer = setTimeout(function () { showWoof(3000); }, 14000 + Math.random() * 10000);
     }, ms);
   }
+  function onFirstScroll() {
+    window.removeEventListener('scroll', onFirstScroll);
+    if (reduced.matches) { woof.el.classList.add('is-on'); return; }
+    woof.timer = setTimeout(function () { showWoof(3800); }, 350);
+  }
   function startWoof() {
     if (!woof.el) return;
-    if (reduced.matches) { woof.el.classList.add('is-on'); return; }
-    woof.timer = setTimeout(function () { showWoof(3800); }, 1400);
+    window.addEventListener('scroll', onFirstScroll, { passive: true });
   }
-  function stopWoof() { clearTimeout(woof.timer); if (woof.el) woof.el.classList.remove('is-on'); }
+  function stopWoof() {
+    window.removeEventListener('scroll', onFirstScroll);
+    clearTimeout(woof.timer); if (woof.el) woof.el.classList.remove('is-on');
+  }
 
   /* ---------- the two dogs ---------- */
   var dogs = {};
