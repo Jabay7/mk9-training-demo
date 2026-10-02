@@ -229,7 +229,7 @@ def test_woof_waits_until_the_badge_is_passed(browser, phone):
     page.context.close()
 
 
-def test_hello_bubble_by_right_ear_clear_of_emblem_and_stars(browser):
+def test_hello_bubble_above_right_ear_clear_of_emblem_and_stars(browser):
     for ctx in (dict(viewport={"width": 1440, "height": 900}), PHONE):
         page = open_page(browser, **ctx)
         goto(page)
@@ -239,11 +239,12 @@ def test_hello_bubble_by_right_ear_clear_of_emblem_and_stars(browser):
         assert page.evaluate("getComputedStyle(document.querySelector('.mascot__hello')).pointerEvents") == "none"
         b = hello.bounding_box()
         m = page.locator("#mascot").bounding_box()
-        # in badge units (viewBox 0..1000): the Eagle, Globe and Anchor spans x 446..676, y 226..371;
+        # in badge units (viewBox 0..1000): the Eagle, Globe and Anchor artwork spans x 446..662, y 226..371
+        # (its image box runs to 676, but the wing tip and anchor end before that);
         # the first star on the right ring sits near x 885, y 410
         x0, x1 = (b["x"] - m["x"]) / m["width"] * 1000, (b["x"] + b["width"] - m["x"]) / m["width"] * 1000
         y0, y1 = (b["y"] - m["y"]) / m["height"] * 1000, (b["y"] + b["height"] - m["y"]) / m["height"] * 1000
-        assert x0 > 676 or y1 < 226 or y0 > 371, f"bubble covers the emblem ({x0:.0f}..{x1:.0f}, {y0:.0f}..{y1:.0f})"
+        assert x0 > 662 or y1 < 226 or y0 > 371, f"bubble covers the emblem ({x0:.0f}..{x1:.0f}, {y0:.0f}..{y1:.0f})"
         assert y1 < 385, f"bubble reaches the first right star ({y1:.0f})"
         assert x0 > 500, "bubble is not on the right side"
         assert b["x"] + b["width"] <= ctx["viewport"]["width"], "bubble runs off screen"
